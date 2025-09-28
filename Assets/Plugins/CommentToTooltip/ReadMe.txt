@@ -21,4 +21,4 @@ This asset is subject to Unity's standard Unity Asset Store End User License Agr
 
 Contact & Support
 =================
-If you have any questions, feedback or requests, please write to admin@curvyeditor.com 
+If you have any questions, feedback or requests, please write to admin@toolbuddy.net 
