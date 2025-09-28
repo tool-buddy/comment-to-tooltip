@@ -29,7 +29,11 @@ namespace ToolBuddy.CommentToTooltip
         /// </summary>
         internal CommentTypes CommentTypes { get; private set; }
 
-        internal CodeProcessingConfiguration(Regex parser, Regex commentExtractor, string compatibleFileExtensions, CommentTypes commentType)
+        internal CodeProcessingConfiguration(
+            Regex parser,
+            Regex commentExtractor,
+            string compatibleFileExtensions,
+            CommentTypes commentType)
         {
             Parser = parser;
             CommentExtractor = commentExtractor;

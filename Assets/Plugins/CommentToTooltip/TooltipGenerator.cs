@@ -12,34 +12,51 @@ namespace ToolBuddy.CommentToTooltip
     /// </summary>
     public class TooltipGenerator
     {
-        private readonly StringBuilder tooltipTagBuilder;
-        private readonly StringBuilder documentationBuilder;
-
-        private readonly List<CodeProcessingConfiguration> codeProcessors;
-        private readonly string escapedNewLineInGeneratedCode;
-        private readonly string newLineInGeneratedCode;
+        private readonly List<CodeProcessingConfiguration> _codeProcessors;
+        private readonly StringBuilder _documentationBuilder;
+        private readonly string _escapedNewLineInGeneratedCode;
+        private readonly string _newLineInGeneratedCode;
+        private readonly StringBuilder _tooltipTagBuilder;
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
         public TooltipGenerator()
         {
-            tooltipTagBuilder = new StringBuilder();
-            documentationBuilder = new StringBuilder();
+            _tooltipTagBuilder = new StringBuilder();
+            _documentationBuilder = new StringBuilder();
 
             const RegexOptions regexOptions = RegexOptions.Multiline;
 
-            newLineInGeneratedCode = Environment.NewLine;
+            _newLineInGeneratedCode = Environment.NewLine;
 
-            escapedNewLineInGeneratedCode = newLineInGeneratedCode.Replace("\r", @"\r");
-            escapedNewLineInGeneratedCode = escapedNewLineInGeneratedCode.Replace("\n", @"\n");
+            _escapedNewLineInGeneratedCode = _newLineInGeneratedCode.Replace(
+                "\r",
+                @"\r"
+            );
+            _escapedNewLineInGeneratedCode = _escapedNewLineInGeneratedCode.Replace(
+                "\n",
+                @"\n"
+            );
 
-            string doubleEscapedNewLine = newLineInGeneratedCode.Replace("\r", @"\\r");
-            doubleEscapedNewLine = doubleEscapedNewLine.Replace("\n", @"\\n");
+            string doubleEscapedNewLine = _newLineInGeneratedCode.Replace(
+                "\r",
+                @"\\r"
+            );
+            doubleEscapedNewLine = doubleEscapedNewLine.Replace(
+                "\n",
+                @"\\n"
+            );
 
             Regex commentExtractingRegexp =
-                new Regex(@"\s*<summary>\s*(?:" + doubleEscapedNewLine + @")?(?<comment>.*?(?=(?:" + doubleEscapedNewLine + @")?\s*</summary\s*))",
-                    regexOptions);
+                new(
+                    @"\s*<summary>\s*(?:"
+                    + doubleEscapedNewLine
+                    + @")?(?<comment>.*?(?=(?:"
+                    + doubleEscapedNewLine
+                    + @")?\s*</summary\s*))",
+                    regexOptions
+                );
 
 
             /* capture groups:
@@ -53,30 +70,57 @@ namespace ToolBuddy.CommentToTooltip
             const string nonTooltipAttributes =
                 @"(?<attributes>^[ \t]*\[(?!([ \t]*(?:UnityEngine.)?Tooltip))[^]]+\]\s*(?=^))*";
             const string nonCommentRegexPart =
-                @"\s*(?=^)" + nonTooltipAttributes + @"(?<tooltip>^[ \t]*\[(?:UnityEngine.)?Tooltip\(""(?<tooltipContent>[^""]*)""\)\]\s*(?=^))?" + nonTooltipAttributes + @"(?<field>(?<beginning>^[ \t]*)public\s+[^\s;=]+\s+[^\s;=]+\s*(?>=[^;]+)?;)";
+                @"\s*(?=^)"
+                + nonTooltipAttributes
+                + @"(?<tooltip>^[ \t]*\[(?:UnityEngine.)?Tooltip\(""(?<tooltipContent>[^""]*)""\)\]\s*(?=^))?"
+                + nonTooltipAttributes
+                + @"(?<field>(?<beginning>^[ \t]*)public\s+[^\s;=]+\s+[^\s;=]+\s*(?>=[^;]+)?;)";
 
 
             string newLineRegex = @"(?:\r)?\n";
-            CodeProcessingConfiguration singleLineDocCommentCSharpProcessingConfiguration = new CodeProcessingConfiguration(new Regex(
-                @"(?>^[ \t]*///[ \t]?(?>(?<documentation>[^\r\n]*))" + newLineRegex + @")+" + nonCommentRegexPart,
-                regexOptions), commentExtractingRegexp, "cs", CommentTypes.SingleLineDocumentation);
+            CodeProcessingConfiguration singleLineDocCommentCSharpProcessingConfiguration = new(
+                new Regex(
+                    @"(?>^[ \t]*///[ \t]?(?>(?<documentation>[^\r\n]*))" + newLineRegex + @")+" + nonCommentRegexPart,
+                    regexOptions
+                ),
+                commentExtractingRegexp,
+                "cs",
+                CommentTypes.SingleLineDocumentation
+            );
 
-            CodeProcessingConfiguration delimitedDocCommentCSharpProcessingConfiguration = new CodeProcessingConfiguration(new Regex(
-                @"(?>^[ \t]*/\*)(?:(?>[ \t]*\*[ \t]?)(?<documentation>[^\r\n]*)(?:" + newLineRegex + @")?)+[ \t]*\*/[ \t]*" + newLineRegex + @"" + nonCommentRegexPart,
-                regexOptions), commentExtractingRegexp, "cs", CommentTypes.DelimitedDocumentation);
+            CodeProcessingConfiguration delimitedDocCommentCSharpProcessingConfiguration = new(
+                new Regex(
+                    @"(?>^[ \t]*/\*)(?:(?>[ \t]*\*[ \t]?)(?<documentation>[^\r\n]*)(?:"
+                    + newLineRegex
+                    + @")?)+[ \t]*\*/[ \t]*"
+                    + newLineRegex
+                    + @""
+                    + nonCommentRegexPart,
+                    regexOptions
+                ),
+                commentExtractingRegexp,
+                "cs",
+                CommentTypes.DelimitedDocumentation
+            );
 
-            CodeProcessingConfiguration singleLineCommentProcessingConfiguration = new CodeProcessingConfiguration(new Regex(
-                @"(?>^[ \t]*//(?!/)[ \t]?(?>(?<documentation>[^\r\n]*))" + newLineRegex + @")+" + nonCommentRegexPart,
-                regexOptions), null, "cs;js", CommentTypes.SingleLine);
+            CodeProcessingConfiguration singleLineCommentProcessingConfiguration = new(
+                new Regex(
+                    @"(?>^[ \t]*//(?!/)[ \t]?(?>(?<documentation>[^\r\n]*))" + newLineRegex + @")+" + nonCommentRegexPart,
+                    regexOptions
+                ),
+                null,
+                "cs;js",
+                CommentTypes.SingleLine
+            );
 
             //CodeProcessingConfiguration delimitedCommentProcessingConfiguration = new CodeProcessingConfiguration(new Regex(
             //    @"(?>^[ \t]*/\*)(?:[ \t]*(?=[^[ \t]])(?<documentation>[^\r\n]*)(?:" + caca + @")?)+[ \t]*\*/[ \t]*" + caca + @"" + nonCommentRegexPart,
             //    regexOptions), null, "cs;js", CommentTypes.Delimited);
 
-            codeProcessors = new List<CodeProcessingConfiguration>();
-            codeProcessors.Add(singleLineDocCommentCSharpProcessingConfiguration);
-            codeProcessors.Add(delimitedDocCommentCSharpProcessingConfiguration);
-            codeProcessors.Add(singleLineCommentProcessingConfiguration);
+            _codeProcessors = new List<CodeProcessingConfiguration>();
+            _codeProcessors.Add(singleLineDocCommentCSharpProcessingConfiguration);
+            _codeProcessors.Add(delimitedDocCommentCSharpProcessingConfiguration);
+            _codeProcessors.Add(singleLineCommentProcessingConfiguration);
             //codeProcessors.Add(delimitedCommentProcessingConfiguration);
         }
 
@@ -86,10 +130,15 @@ namespace ToolBuddy.CommentToTooltip
         /// <param name="filePath"> The path of the file to update. </param>
         /// <param name="commentTypes"> The <see cref="CommentTypes"/> to be considered while generating the tooltips. </param>
         /// <returns> True if the file was updated. </returns>
-        public bool TryProcessFile(string filePath, CommentTypes commentTypes)
-        {
-            return TryProcessFile(filePath, filePath, Encoding.Default, commentTypes);
-        }
+        public bool TryProcessFile(
+            string filePath,
+            CommentTypes commentTypes) =>
+            TryProcessFile(
+                filePath,
+                filePath,
+                Encoding.Default,
+                commentTypes
+            );
 
         /// <summary>
         /// Processes the file's content, and if any tooltip was generated, updates the file.
@@ -98,10 +147,16 @@ namespace ToolBuddy.CommentToTooltip
         /// <param name="fileEncoding"> The <see cref="Encoding"/> of the file. </param>
         /// <param name="commentTypes"> The <see cref="CommentTypes"/> to be considered while generating the tooltips. </param>
         /// <returns> True if an output file with updated content was created. </returns>
-        public bool TryProcessFile(string filePath, Encoding fileEncoding, CommentTypes commentTypes)
-        {
-            return TryProcessFile(filePath, filePath, fileEncoding, commentTypes);
-        }
+        public bool TryProcessFile(
+            string filePath,
+            Encoding fileEncoding,
+            CommentTypes commentTypes) =>
+            TryProcessFile(
+                filePath,
+                filePath,
+                fileEncoding,
+                commentTypes
+            );
 
         /// <summary>
         /// Processes the input file's content, and if any tooltip was generated, an output file will be created containing the updated content.
@@ -110,10 +165,16 @@ namespace ToolBuddy.CommentToTooltip
         /// <param name="outputFilePath"> The path of the output file. </param>
         /// <param name="commentTypes"> The <see cref="CommentTypes"/> to be considered while generating the tooltips. </param>
         /// <returns> True if an output file with updated content was created. </returns>
-        public bool TryProcessFile(string inputFilePath, string outputFilePath, CommentTypes commentTypes)
-        {
-            return TryProcessFile(inputFilePath, outputFilePath, Encoding.Default, commentTypes);
-        }
+        public bool TryProcessFile(
+            string inputFilePath,
+            string outputFilePath,
+            CommentTypes commentTypes) =>
+            TryProcessFile(
+                inputFilePath,
+                outputFilePath,
+                Encoding.Default,
+                commentTypes
+            );
 
         /// <summary>
         /// Processes the input file's content, and if any tooltip was generated, an output file will be created containing the updated content.
@@ -123,24 +184,37 @@ namespace ToolBuddy.CommentToTooltip
         /// <param name="fileEncoding"> The <see cref="Encoding"/> of the input file and output file. </param>
         /// <param name="commentTypes"> The <see cref="CommentTypes"/> to be considered while generating the tooltips. </param>
         /// <returns> True if an output file with updated content was created. </returns>
-        public bool TryProcessFile(string inputFilePath, string outputFilePath, Encoding fileEncoding, CommentTypes commentTypes)
+        public bool TryProcessFile(
+            string inputFilePath,
+            string outputFilePath,
+            Encoding fileEncoding,
+            CommentTypes commentTypes)
         {
-            String inputFileContent;
-            using (StreamReader streamReader = new StreamReader(inputFilePath, fileEncoding))
+            string inputFileContent;
+            using (StreamReader streamReader = new(
+                       inputFilePath,
+                       fileEncoding
+                   ))
             {
                 inputFileContent = streamReader.ReadToEnd();
             }
 
             string outputFileContent;
-            bool fileWasModified = TryProcessText(inputFileContent, out outputFileContent, commentTypes);
+            bool fileWasModified = TryProcessText(
+                inputFileContent,
+                out outputFileContent,
+                commentTypes
+            );
 
             if (fileWasModified)
-            {
-                using (StreamWriter writer = new StreamWriter(outputFilePath, false, fileEncoding))
+                using (StreamWriter writer = new(
+                           outputFilePath,
+                           false,
+                           fileEncoding
+                       ))
                 {
                     writer.Write(outputFileContent);
                 }
-            }
 
             return fileWasModified;
         }
@@ -152,13 +226,16 @@ namespace ToolBuddy.CommentToTooltip
         /// <param name="processedText"> The output text. If method returns false, this text will be equal to <paramref name="textToProcess"/>. </param>
         /// <param name="commentTypes"> The <see cref="CommentTypes"/> to be considered while generating the tooltips. </param>
         /// <returns> True if the text was updated.</returns>
-        public Boolean TryProcessText(string textToProcess, out string processedText, CommentTypes commentTypes)
+        public bool TryProcessText(
+            string textToProcess,
+            out string processedText,
+            CommentTypes commentTypes)
         {
             processedText = textToProcess;
 
             bool fileWasModified = false;
 
-            foreach (CodeProcessingConfiguration codeProcessor in codeProcessors)
+            foreach (CodeProcessingConfiguration codeProcessor in _codeProcessors)
             {
                 if ((codeProcessor.CommentTypes & commentTypes) == CommentTypes.None)
                     continue;
@@ -170,67 +247,86 @@ namespace ToolBuddy.CommentToTooltip
                 {
                     Match match = matches[matchIndex];
                     GroupCollection groups = match.Groups;
-                    string tooltipContent = BuildTooltipContent(groups["documentation"].Captures, codeProcessor.CommentExtractor);
+                    string tooltipContent = BuildTooltipContent(
+                        groups["documentation"].Captures,
+                        codeProcessor.CommentExtractor
+                    );
 
                     //if existing tooltip is different than the generated one
                     if (tooltipContent != groups["tooltipContent"].ToString())
                     {
-                        tooltipTagBuilder.Append(groups["beginning"]);
+                        _tooltipTagBuilder.Append(groups["beginning"]);
                         //tooltip attribute beginning
-                        tooltipTagBuilder.Append("[UnityEngine.Tooltip(\"");
-                        tooltipTagBuilder.Append(tooltipContent);
+                        _tooltipTagBuilder.Append("[UnityEngine.Tooltip(\"");
+                        _tooltipTagBuilder.Append(tooltipContent);
                         //tooltip attribute end
-                        tooltipTagBuilder.Append("\")]");
-                        tooltipTagBuilder.Append(newLineInGeneratedCode);
-                        string tooltip = tooltipTagBuilder.ToString();
-                        tooltipTagBuilder.Length = 0;
-                        tooltipTagBuilder.Capacity = 0;
+                        _tooltipTagBuilder.Append("\")]");
+                        _tooltipTagBuilder.Append(_newLineInGeneratedCode);
+                        string tooltip = _tooltipTagBuilder.ToString();
+                        _tooltipTagBuilder.Length = 0;
+                        _tooltipTagBuilder.Capacity = 0;
 
                         //remove possible old tooltip
                         Group oldTooltipGroup = groups["tooltip"];
                         int oldTolltipLength = oldTooltipGroup.Length;
                         if (oldTolltipLength > 0)
                         {
-                            processedText = processedText.Remove(insertedTextLength + oldTooltipGroup.Index,
-                                oldTolltipLength);
+                            processedText = processedText.Remove(
+                                insertedTextLength + oldTooltipGroup.Index,
+                                oldTolltipLength
+                            );
                             insertedTextLength -= oldTolltipLength;
                         }
+
                         //insert tooltip in text
-                        processedText = processedText.Insert(insertedTextLength + groups["field"].Index, tooltip);
+                        processedText = processedText.Insert(
+                            insertedTextLength + groups["field"].Index,
+                            tooltip
+                        );
                         insertedTextLength += tooltip.Length;
 
                         fileWasModified = true;
                     }
                 }
             }
+
             return fileWasModified;
         }
 
-        private string BuildTooltipContent(CaptureCollection documentationCaptures, Regex commentExtractor)
+        private string BuildTooltipContent(
+            CaptureCollection documentationCaptures,
+            Regex commentExtractor)
         {
             //constructing the documentation text
             int capturesCount = documentationCaptures.Count;
             for (int captureIndex = 0; captureIndex < capturesCount; captureIndex++)
             {
                 Capture capturedLine = documentationCaptures[captureIndex];
-                documentationBuilder.Append(capturedLine);
+                _documentationBuilder.Append(capturedLine);
 
                 //new line if there is other lines to add
                 if (captureIndex != capturesCount - 1)
-                    documentationBuilder.Append(escapedNewLineInGeneratedCode);
+                    _documentationBuilder.Append(_escapedNewLineInGeneratedCode);
             }
 
-            string documentation = documentationBuilder.ToString();
-            documentationBuilder.Length = 0;
-            documentationBuilder.Capacity = 0;
+            string documentation = _documentationBuilder.ToString();
+            _documentationBuilder.Length = 0;
+            _documentationBuilder.Capacity = 0;
 
             string tooltipContent;
             if (commentExtractor != null)
             {
                 //extracting the significant meaningful part of the documentation
                 Match match = commentExtractor.Match(documentation);
-                if (match.Success == false)
-                    throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture, "Could not parse the following documentation xml '{0}'", documentation));
+                if (!match.Success)
+                    throw new InvalidOperationException(
+                        String.Format(
+                            CultureInfo.InvariantCulture,
+                            "Could not parse the following documentation xml '{0}'",
+                            documentation
+                        )
+                    );
+
                 tooltipContent = match.Groups["comment"].ToString();
             }
             else
