@@ -1,0 +1,16 @@
+using System;
+using UnityEngine;
+
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    public class A
+    {
+        /// <summary>
+        /// Test2
+        ///
+        /// Test3
+        /// </summary>
+        [UnityEngine.Tooltip("Test2\r\n\r\nTest3")]
+        public int a2;
+    }
+}

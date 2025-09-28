@@ -1,0 +1,17 @@
+using System;
+using System.Xml.Serialization;
+using UnityEngine;
+
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    public class A
+    {
+        /// <summary>
+        /// Test5
+        /// </summary>
+        [Obsolete("tatatat")]
+        [UnityEngine.Tooltip("replace me")]
+        [XmlIgnore]
+        public int a3;
+    }
+}

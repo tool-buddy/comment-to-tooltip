@@ -1,0 +1,42 @@
+using System;
+using UnityEngine;
+
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    public class A
+    {
+        /// <summary>
+        /// Radius modifier mode
+        /// </summary>
+        [UnityEngine.Tooltip("Radius modifier mode")]
+        public long RadiusModifier;
+
+        /// <summary>
+        /// Z modifier mode
+        /// </summary>
+        [UnityEngine.Tooltip("Z modifier mode")]
+        public long ZModifier;
+
+        /// <summary>
+        /// Splines contained in this SplineGroup
+        /// </summary>
+        [UnityEngine.Tooltip("Splines contained in this SplineGroup")]
+        public List<CurvySpline> Splines = new List<CurvySpline>();
+
+        /// <summary>
+        /// Magnetizing objects
+        /// </summary>
+        [UnityEngine.Tooltip("Magnetizing objects")]
+        public List<GameObject> Tracks;
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        private int b;
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        protected int c;
+    }
+}

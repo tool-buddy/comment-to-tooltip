@@ -1,0 +1,13 @@
+using System;
+using UnityEngine;
+
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    public class A
+    {
+        //x21
+        // x22
+        [UnityEngine.Tooltip("x21\r\nx22")]
+        public int a12;
+    }
+}

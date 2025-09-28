@@ -1,0 +1,14 @@
+using System;
+using UnityEngine;
+
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    public class A
+    {
+        /**
+         * <summary>
+         * Test9
+         * </summary>*/
+        public int a9;
+    }
+}

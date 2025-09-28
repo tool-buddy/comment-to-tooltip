@@ -1,0 +1,14 @@
+using System;
+using UnityEngine;
+
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    public class A
+    {
+        /// <summary>
+        /// Test7 - replace me
+        /// </summary>
+        [UnityEngine.Tooltip("replace me")]
+        public int a31;
+    }
+}

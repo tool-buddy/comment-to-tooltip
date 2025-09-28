@@ -1,0 +1,17 @@
+using System;
+using UnityEngine;
+
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    public class A
+    {
+        /// <summary>
+        ///Test6
+        /// </summary>
+        [UnityEngine.Tooltip("Test6")]
+        public string a5 = new string(
+            's',
+            3
+        );
+    }
+}
