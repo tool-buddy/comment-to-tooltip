@@ -1,0 +1,21 @@
+{
+    "name": "ToolBuddy.CommentToTooltip.Editor",
+    "rootNamespace": "ToolBuddy.CommentToTooltip.Editor",
+    "references": [
+        "GUID:9b33605d6da3be2449f07c0aa8e55d0f",
+        "CommentToTooltip",
+        "GUID:9b33605d6da3be2449f07c0aa8e55d0f",
+        "ToolBuddy.CommentToTooltip"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
