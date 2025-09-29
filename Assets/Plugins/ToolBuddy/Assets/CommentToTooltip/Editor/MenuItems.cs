@@ -34,13 +34,9 @@ namespace ToolBuddy.CommentToTooltip.Editor
                 FileProcessor.ProcessFolder(folderPath);
         }
 
-        [MenuItem(MenuName + "/" + "Settings")]
-        public static void OnSettings() =>
-            EditorWindow.GetWindow<SettingsWindow>(
-                true,
-                "Settings",
-                true
-            );
+        [MenuItem(MenuName + "/" + "Preferences")]
+        public static void OnPreferences() =>
+            SettingsService.OpenUserPreferences($"Preferences/{AssetInformation.Name}");
 
         [MenuItem(MenuName + "/" + "Help")]
         public static void OnHelp() =>

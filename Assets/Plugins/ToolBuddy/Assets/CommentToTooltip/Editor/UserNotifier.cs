@@ -25,7 +25,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
 
         private static void OnNoCommentTypeSelected() =>
             DisplayDialogBoxMessage(
-                "No comment type(s) selected. Please select at least one in the settings menu."
+                "No comment type(s) selected. Please select at least one in the Preferences menu."
             );
 
         private static bool OnCancellationCheck(
