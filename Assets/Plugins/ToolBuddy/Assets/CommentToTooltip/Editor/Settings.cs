@@ -44,15 +44,15 @@ namespace ToolBuddy.CommentToTooltip.Editor
             );
         }
 
-        public CommentTypes GetCommenTypes()
+        public CommentTypes GetCommentTypes()
         {
             CommentTypes result = CommentTypes.None;
             if (ParseSingleLineDocumentationComments)
-                result = result | CommentTypes.SingleLineDocumentation;
+                result |= CommentTypes.SingleLineDocumentation;
             if (ParseDelimitedDocumentationComments)
-                result = result | CommentTypes.DelimitedDocumentation;
+                result |= CommentTypes.DelimitedDocumentation;
             if (ParseSingleLineComments)
-                result = result | CommentTypes.SingleLine;
+                result |= CommentTypes.SingleLine;
             return result;
         }
     }
