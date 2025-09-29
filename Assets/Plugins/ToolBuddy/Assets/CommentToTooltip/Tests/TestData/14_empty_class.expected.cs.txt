@@ -1,0 +1,10 @@
+using System;
+using UnityEngine;
+
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    /// <summary>
+    /// Test
+    /// </summary>
+    internal class D { }
+}

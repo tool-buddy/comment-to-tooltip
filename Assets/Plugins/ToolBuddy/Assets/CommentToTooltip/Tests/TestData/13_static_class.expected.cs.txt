@@ -1,0 +1,40 @@
+using System;
+using UnityEngine;
+
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    /// <summary>
+    /// Test
+    /// </summary>
+    internal static class B
+    {
+        /// <summary>
+        /// Test
+        /// </summary>
+        private static int a;
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        public static int b;
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        private static int? A() =>
+            null;
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        private static string C() =>
+            null;
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        public static int[] D(
+            int x) =>
+            null;
+    }
+}
