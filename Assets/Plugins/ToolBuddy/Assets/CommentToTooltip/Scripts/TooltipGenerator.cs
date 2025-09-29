@@ -12,7 +12,7 @@ namespace ToolBuddy.CommentToTooltip
     /// </summary>
     public class TooltipGenerator
     {
-        private readonly List<CodeProcessingConfiguration> _codeProcessors;
+        private readonly CodeProcessingConfiguration[] _codeProcessors;
         private readonly StringBuilder _documentationBuilder;
         private readonly string _escapedNewLineInGeneratedCode;
         private readonly string _newLineInGeneratedCode;
@@ -84,7 +84,6 @@ namespace ToolBuddy.CommentToTooltip
                     regexOptions
                 ),
                 commentExtractingRegexp,
-                "cs",
                 CommentTypes.SingleLineDocumentation
             );
 
@@ -99,7 +98,6 @@ namespace ToolBuddy.CommentToTooltip
                     regexOptions
                 ),
                 commentExtractingRegexp,
-                "cs",
                 CommentTypes.DelimitedDocumentation
             );
 
@@ -109,19 +107,15 @@ namespace ToolBuddy.CommentToTooltip
                     regexOptions
                 ),
                 null,
-                "cs;js",
                 CommentTypes.SingleLine
             );
 
-            //CodeProcessingConfiguration delimitedCommentProcessingConfiguration = new CodeProcessingConfiguration(new Regex(
-            //    @"(?>^[ \t]*/\*)(?:[ \t]*(?=[^[ \t]])(?<documentation>[^\r\n]*)(?:" + caca + @")?)+[ \t]*\*/[ \t]*" + caca + @"" + nonCommentRegexPart,
-            //    regexOptions), null, "cs;js", CommentTypes.Delimited);
-
-            _codeProcessors = new List<CodeProcessingConfiguration>();
-            _codeProcessors.Add(singleLineDocCommentCSharpProcessingConfiguration);
-            _codeProcessors.Add(delimitedDocCommentCSharpProcessingConfiguration);
-            _codeProcessors.Add(singleLineCommentProcessingConfiguration);
-            //codeProcessors.Add(delimitedCommentProcessingConfiguration);
+            _codeProcessors = new[]
+            {
+                singleLineDocCommentCSharpProcessingConfiguration,
+                delimitedDocCommentCSharpProcessingConfiguration,
+                singleLineCommentProcessingConfiguration
+            };
         }
 
         /// <summary>
