@@ -1,0 +1,51 @@
+﻿using System.IO;
+using ToolBuddy.CommentToTooltip.Editor.Settings;
+using UnityEditor;
+
+namespace ToolBuddy.CommentToTooltip.Editor
+{
+    public static class MenuItems
+    {
+        private const string MenuName = "Tools/" + AssetInformation.Name;
+
+        [MenuItem(MenuName + "/" + "Process a file...")]
+        public static void OnProcessFile()
+        {
+            string filePath = EditorUtility.OpenFilePanel(
+                "Select a file",
+                SettingsStorage.InitialFolderPath,
+                "cs"
+            );
+
+            if (File.Exists(filePath))
+                FileProcessor.ProcessFile(filePath);
+        }
+
+        [MenuItem(MenuName + "/" + "Process a folder...")]
+        public static void OnProcessAFolder()
+        {
+            string folderPath = EditorUtility.OpenFolderPanel(
+                "Select a folder",
+                SettingsStorage.InitialFolderPath,
+                ""
+            );
+
+            if (Directory.Exists(folderPath))
+                FileProcessor.ProcessFolder(folderPath);
+        }
+
+        [MenuItem(MenuName + "/" + "Settings")]
+        public static void OnSettings() =>
+            EditorWindow.GetWindow<SettingsWindow>(
+                true,
+                "Settings",
+                true
+            );
+
+        [MenuItem(MenuName + "/" + "Help")]
+        public static void OnHelp() =>
+            UserNotifier.DisplayDialogBoxMessage(
+                "Help can be found in the ReadMe.txt file"
+            );
+    }
+}

@@ -1,15 +1,7 @@
 fileFormatVersion: 2
-guid: 848f14dbde0cd074dbb88b55fa05523a
-labels:
-- comment
-- documentation
-- comments
-- tooltip
-- automatic
-- autogenerate
-- tooltips
-- generation
+guid: 5c9ef75ffbb2148408d18f385e19735f
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
   defaultReferences: []
   executionOrder: 0
