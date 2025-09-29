@@ -1,5 +1,5 @@
 // =====================================================================
-// Copyright 2015-2018 ToolBuddy
+// Copyright © 2015 ToolBuddy
 // All rights reserved
 // 
 // http://www.toolbuddy.net
@@ -7,18 +7,20 @@
 
 USAGE
 =====
-The Comment To Tooltip menu is listed under the Tools tab in the menu bar. It contains the following items:
-  * Process a file: processes a single file.
-  * Process a folder: processes recursively all ".cs" files in a folder.
-  * Settings: lets you select the type of comments to be processed. The more options you select, the more time will be required for processing.
-  * Help and Documentation: leads you to this documentation.
+The Comment To Tooltip menu is available under Tools -> ToolBuddy in the menu bar.  
+It includes the following options:  
+  * Process a file: Processes a single file.  
+  * Process a folder: Recursively processes all `.cs` files in a folder.  
+  * Preferences: Allows you to choose which types of comments to process.  
+    > Note: The more options you select, the longer the processing time will be.  
+  * Help: Opens this documentation.
 
-The source code is included in the package, so feel free to modify the code for your own needs.
+The source code is included in the package, and you are welcome to modify it to suit your needs.
 
 LICENSE
 =======
-This asset is subject to Unity's standard Unity Asset Store End User License Agreement ("Unity-EULA") .
+This asset is governed by Unity’s standard Unity Asset Store End User License Agreement (“Unity-EULA”).
 
 Contact & Support
 =================
-If you have any questions, feedback or requests, please write to admin@toolbuddy.net 
+For questions, feedback, or support requests, please contact: admin@toolbuddy.net
