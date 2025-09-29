@@ -9,29 +9,38 @@ namespace ToolBuddy.CommentToTooltip
     public enum CommentTypes
     {
         /// <summary>
-        /// No comments
+        /// No comments.
         /// </summary>
         None = 0,
 
         /// <summary>
-        /// Comments of type: \verbatim/// <summary> something </summary>\endverbatim
-        /// More information can be found in the Annex E: "Documentation Comments" of the C# Language specification
+        /// Comments of type XML documentation single-line.
+        /// More information can be found in Annex E: "Documentation Comments" of the C# Language Specification.
         /// </summary>
+        /// <example>
+        /// /// &lt;summary&gt; Comment here &lt;/summary&gt;
+        /// </example>
         SingleLineDocumentation = 1 << 0,
 
         /// <summary>
-        /// Comments of type: \verbatim/**<summary> Comment here </summary>*/ \endverbatim
-        /// More information can be found in the Annex E: "Documentation Comments" of the C# Language specification
+        /// Comments of type XML documentation delimited.
+        /// More information can be found in Annex E: "Documentation Comments" of the C# Language Specification.
         /// </summary>
+        /// <example>
+        /// /** &lt;summary&gt; Comment here &lt;/summary&gt; */
+        /// </example>
         DelimitedDocumentation = 1 << 1,
 
         /// <summary>
-        /// Comments of type: \verbatim// Comment here \endverbatim
+        /// Regular single-line comments.
         /// </summary>
+        /// <example>
+        /// // Comment here
+        /// </example>
         SingleLine = 1 << 2,
 
         /// <summary>
-        /// All supported comments
+        /// All supported comments.
         /// </summary>
         All = SingleLineDocumentation | DelimitedDocumentation | SingleLine
     }
