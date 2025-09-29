@@ -91,21 +91,21 @@ namespace ToolBuddy.CommentToTooltip.Editor
         private const string NoFilesFoundDialogMessage = "No files found to process.";
         private const string ProcessingInProgressDialogMessage = "Processing file {0} out of {1} : {2}";
 
-        private const string ProcessingInteruptedDialogMessage =
+        private const string ProcessingInterruptedDialogMessage =
             "The operation was stopped by the user. No changes were applied.";
 
-        private const string ProcessingSuccededDialogMessage = "Processing of {0} file{1} completed successfully in {2}s. ";
+        private const string ProcessingSucceededDialogMessage = "Processing of {0} file{1} completed successfully in {2}s. ";
 
         private const string ProcessingSucceededWithRecoverableErrorDialogMessage =
             "Errors were encountered for one or more files. These files were ignored. ";
 
-        private const string ProcessingSuccededFilesModifiedDialogMessage = "{0} file{1} modified. ";
-        private const string ProcessingSuccededNoFilesModifiedDialogMessage = "No files were modified. ";
+        private const string ProcessingSucceededFilesModifiedDialogMessage = "{0} file{1} modified. ";
+        private const string ProcessingSucceededNoFilesModifiedDialogMessage = "No files were modified. ";
 
-        private const string ProcessingSuccededSeeLogsDialogMessage =
+        private const string ProcessingSucceededSeeLogsDialogMessage =
             "You can find more details in the console or in the logs file.";
 
-        private const string ProcessingEncountredCriticalErrorDialogMessage =
+        private const string ProcessingEncounteredCriticalErrorDialogMessage =
             "An unexpected error occurred while processing a file. No changes were applied. You can find more details in the console.";
 
         private const string OkButtonDialogBox = "Ok";
@@ -114,7 +114,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
         private const string FilesModifiedConsoleMessage = "Tooltips added or modified in the following files:";
         private const string LogsUpdatedConsoleMessage = "Messages logged in the following file: '{0}'.";
 
-        private const string RecoverableErrorEncoutredConsoleMessage =
+        private const string RecoverableErrorEncounteredConsoleMessage =
             "An exception occured while processing the following file '{0}'. This file will be ignored.";
 
         //log file only messages
@@ -152,7 +152,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
                 InitialFolderPath = folderPath;
                 string[] filePaths = Directory.GetFiles(
                     folderPath,
-                    "*." + SupportedFileExtension,
+                    $"*.{SupportedFileExtension}",
                     SearchOption.AllDirectories
                 );
                 ProcessFiles(filePaths);
@@ -181,7 +181,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
         private static void ProcessFiles(
             string[] filePaths)
         {
-            CommentTypes commentTypes = Settings.GetCommenTypes();
+            CommentTypes commentTypes = Settings.GetCommentTypes();
 
             List<string> validatedFilePaths = filePaths.AsEnumerable().Where(s => !String.IsNullOrEmpty(s)).ToList();
 
@@ -219,7 +219,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
                 {
                     filesToWrite.Clear();
                     DisplayDialogBoxMessage(
-                        ProcessingEncountredCriticalErrorDialogMessage,
+                        ProcessingEncounteredCriticalErrorDialogMessage,
                         true
                     );
                     throw;
@@ -286,7 +286,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
                 {
                     DisplayConsoleMessage(
                         String.Format(
-                            RecoverableErrorEncoutredConsoleMessage,
+                            RecoverableErrorEncounteredConsoleMessage,
                             filePath
                         ),
                         true
@@ -304,7 +304,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
             {
                 modifiedFiles.Clear();
                 DisplayDialogBoxMessage(
-                    ProcessingInteruptedDialogMessage,
+                    ProcessingInterruptedDialogMessage,
                     true
                 );
             }
@@ -382,7 +382,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
         {
             string operationCompletedMessage = String.Format(
                 CultureInfo.InvariantCulture,
-                ProcessingSuccededDialogMessage,
+                ProcessingSucceededDialogMessage,
                 _batchProcessedFilesCount,
                 _batchProcessedFilesCount == 1
                     ? String.Empty
@@ -397,11 +397,11 @@ namespace ToolBuddy.CommentToTooltip.Editor
                 operationCompletedMessage += ProcessingSucceededWithRecoverableErrorDialogMessage;
 
             if (writtenFilesCount == 0)
-                operationCompletedMessage += ProcessingSuccededNoFilesModifiedDialogMessage;
+                operationCompletedMessage += ProcessingSucceededNoFilesModifiedDialogMessage;
             else
                 operationCompletedMessage += String.Format(
                     CultureInfo.InvariantCulture,
-                    ProcessingSuccededFilesModifiedDialogMessage,
+                    ProcessingSucceededFilesModifiedDialogMessage,
                     writtenFilesCount,
                     writtenFilesCount == 1
                         ? String.Empty
@@ -409,7 +409,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
                 );
 
             if (writtenFilesCount > 0 || wasExceptionCatched)
-                operationCompletedMessage += ProcessingSuccededSeeLogsDialogMessage;
+                operationCompletedMessage += ProcessingSucceededSeeLogsDialogMessage;
 
             DisplayDialogBoxMessage(
                 operationCompletedMessage,
