@@ -11,29 +11,26 @@ namespace ToolBuddy.CommentToTooltip.Editor.Settings
         private static void EnsureStyles()
         {
             if (_headerStyle == null)
-            {
                 _headerStyle = new GUIStyle(EditorStyles.boldLabel)
                 {
                     fontSize = 12
                 };
-            }
 
             if (_descStyle == null)
-            {
                 _descStyle = new GUIStyle(EditorStyles.wordWrappedLabel);
-            }
         }
 
         [SettingsProvider]
-        public static SettingsProvider CreateProvider()
-        {
-            return new SettingsProvider($"Preferences/{AssetInformation.Name}", SettingsScope.User)
+        public static SettingsProvider CreateProvider() =>
+            new(
+                $"Preferences/{AssetInformation.Name}",
+                SettingsScope.User
+            )
             {
                 label = AssetInformation.Name,
                 guiHandler = GUIHandler,
                 keywords = AssetInformation.Name.Split(' ')
             };
-        }
 
         private static void GUIHandler(
             string ctx)
@@ -53,7 +50,8 @@ namespace ToolBuddy.CommentToTooltip.Editor.Settings
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             GUILayout.Space(4);
 
-            DrawParsingSettings(SettingsStorage.ParsingSettings,
+            DrawParsingSettings(
+                SettingsStorage.ParsingSettings,
                 out bool parseSingleLineDocumentation,
                 out bool parseDelimitedDocumentation,
                 out bool parseSingleLine

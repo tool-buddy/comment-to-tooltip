@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using ToolBuddy.CommentToTooltip.Editor.FileProcessing;
 using ToolBuddy.CommentToTooltip.Editor.Settings;
 using UnityEditor;
 using UnityEngine;
