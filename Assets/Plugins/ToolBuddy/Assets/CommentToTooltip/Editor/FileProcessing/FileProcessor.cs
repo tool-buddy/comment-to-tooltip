@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using ToolBuddy.CommentToTooltip.Editor.Settings;
 
-namespace ToolBuddy.CommentToTooltip.Editor
+namespace ToolBuddy.CommentToTooltip.Editor.FileProcessing
 {
     public static class FileProcessor
     {
