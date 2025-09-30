@@ -29,6 +29,8 @@ namespace ToolBuddy.CommentToTooltip
             _extractionRules = GetCommentExtractionRules();
         }
 
+        #region Text processing
+
         /// <summary>
         /// Processes the given text by updating it with tooltips generated from valid comments.
         /// </summary>
@@ -45,62 +47,176 @@ namespace ToolBuddy.CommentToTooltip
 
             bool fileWasModified = false;
 
-            foreach (CommentExtractionRule codeProcessor in _extractionRules)
+            foreach (CommentExtractionRule rule in _extractionRules)
             {
-                if ((codeProcessor.SupportedTypes & commentTypes) == CommentTypes.None)
+                if ((rule.SupportedTypes & commentTypes) == CommentTypes.None)
                     continue;
 
-                int insertedTextLength = 0;
-                MatchCollection matches = codeProcessor.CommentedFieldPattern.Matches(processedText);
-                for (int matchIndex = 0; matchIndex < matches.Count; matchIndex++)
-                {
-                    Match match = matches[matchIndex];
-                    GroupCollection groups = match.Groups;
-                    string tooltipContent = BuildTooltipContent(
-                        groups["documentation"].Captures,
-                        codeProcessor.CommentExtractor
-                    );
-
-                    //if existing tooltip is different from the generated one
-                    if (tooltipContent != groups["tooltipContent"].ToString())
-                    {
-                        _tooltipTagBuilder.Append(groups["beginning"]);
-                        //tooltip attribute beginning
-                        _tooltipTagBuilder.Append("[UnityEngine.Tooltip(\"");
-                        _tooltipTagBuilder.Append(tooltipContent);
-                        //tooltip attribute end
-                        _tooltipTagBuilder.Append("\")]");
-                        _tooltipTagBuilder.Append(_lineEnding);
-                        string tooltip = _tooltipTagBuilder.ToString();
-                        _tooltipTagBuilder.Length = 0;
-                        _tooltipTagBuilder.Capacity = 0;
-
-                        //remove possible old tooltip
-                        Group oldTooltipGroup = groups["tooltip"];
-                        int oldTooltipLength = oldTooltipGroup.Length;
-                        if (oldTooltipLength > 0)
-                        {
-                            processedText = processedText.Remove(
-                                insertedTextLength + oldTooltipGroup.Index,
-                                oldTooltipLength
-                            );
-                            insertedTextLength -= oldTooltipLength;
-                        }
-
-                        //insert tooltip in text
-                        processedText = processedText.Insert(
-                            insertedTextLength + groups["field"].Index,
-                            tooltip
-                        );
-                        insertedTextLength += tooltip.Length;
-
-                        fileWasModified = true;
-                    }
-                }
+                fileWasModified |= ProcessRule(
+                    rule,
+                    ref processedText
+                );
             }
 
             return fileWasModified;
         }
+
+        private bool ProcessRule(
+            CommentExtractionRule rule,
+            ref string processedText)
+        {
+            int insertedTextLength = 0;
+            bool textWasModified = false;
+
+            MatchCollection matches = rule.CommentedFieldPattern.Matches(processedText);
+
+            for (int matchIndex = 0; matchIndex < matches.Count; matchIndex++)
+                textWasModified |= ProcessMatch(
+                    matches[matchIndex],
+                    rule.CommentExtractor,
+                    ref processedText,
+                    ref insertedTextLength
+                );
+
+            return textWasModified;
+        }
+
+        private bool ProcessMatch(
+            Match match,
+            Regex commentExtractor,
+            ref string processedText,
+            ref int insertedTextLength)
+        {
+            string documentation = GetDocumentation(match.Groups["documentation"].Captures);
+
+            string newTooltipContent = GetTooltipContent(
+                documentation,
+                commentExtractor
+            );
+            string oldTooltipContent = match.Groups["tooltipContent"].ToString();
+
+            if (newTooltipContent == oldTooltipContent)
+                return false;
+
+            TryRemoveOldTooltip(
+                ref processedText,
+                ref insertedTextLength,
+                match.Groups
+            );
+
+            InsertNewTooltip(
+                ref processedText,
+                ref insertedTextLength,
+                match.Groups,
+                GetTooltipLine(
+                    match.Groups,
+                    newTooltipContent
+                )
+            );
+
+            return true;
+        }
+
+        private static bool TryRemoveOldTooltip(
+            ref string processedText,
+            ref int insertedTextLength,
+            GroupCollection groups)
+        {
+            Group oldTooltipGroup = groups["tooltip"];
+
+            if (oldTooltipGroup.Length == 0)
+                return false;
+
+            processedText = processedText.Remove(
+                insertedTextLength + oldTooltipGroup.Index,
+                oldTooltipGroup.Length
+            );
+            insertedTextLength -= oldTooltipGroup.Length;
+
+            return true;
+        }
+
+        private static void InsertNewTooltip(
+            ref string processedText,
+            ref int insertedTextLength,
+            GroupCollection groups,
+            string tooltip)
+        {
+            processedText = processedText.Insert(
+                insertedTextLength + groups["field"].Index,
+                tooltip
+            );
+            insertedTextLength += tooltip.Length;
+        }
+
+        private string GetTooltipLine(
+            GroupCollection groups,
+            string tooltipContent)
+        {
+            _tooltipTagBuilder.Append(groups["beginning"]);
+            //tooltip attribute beginning
+            _tooltipTagBuilder.Append("[UnityEngine.Tooltip(\"");
+            _tooltipTagBuilder.Append(tooltipContent);
+            //tooltip attribute end
+            _tooltipTagBuilder.Append("\")]");
+            _tooltipTagBuilder.Append(_lineEnding);
+            string tooltip = _tooltipTagBuilder.ToString();
+            _tooltipTagBuilder.Clear();
+            return tooltip;
+        }
+
+        private static string GetTooltipContent(
+            string documentation,
+            Regex commentExtractor)
+        {
+            if (commentExtractor == null)
+                return documentation;
+
+            //extracting the significant meaningful part of the documentation
+            Match match = commentExtractor.Match(documentation);
+            if (!match.Success)
+                throw new InvalidOperationException(
+                    String.Format(
+                        CultureInfo.InvariantCulture,
+                        "Could not parse the following documentation xml '{0}'",
+                        documentation
+                    )
+                );
+
+            return match.Groups["comment"].ToString();
+        }
+
+        private string GetDocumentation(
+            CaptureCollection documentationCaptures)
+        {
+            string escapedNewLineLiteral = _lineEnding.Replace(
+                "\r",
+                @"\r"
+            ).Replace(
+                "\n",
+                @"\n"
+            );
+
+            //constructing the documentation text
+            int capturesCount = documentationCaptures.Count;
+            for (int captureIndex = 0; captureIndex < capturesCount; captureIndex++)
+            {
+                Capture capturedLine = documentationCaptures[captureIndex];
+                _documentationBuilder.Append(capturedLine);
+
+                //new line if there is other lines to add
+                if (captureIndex != capturesCount - 1)
+                    _documentationBuilder.Append(escapedNewLineLiteral);
+            }
+
+            string documentation = _documentationBuilder.ToString();
+            _documentationBuilder.Clear();
+            return documentation;
+        }
+
+        #endregion
+
+        #region Rules building
 
         private CommentExtractionRule[] GetCommentExtractionRules() =>
             new[]
@@ -203,53 +319,6 @@ namespace ToolBuddy.CommentToTooltip
             );
         }
 
-        private string BuildTooltipContent(
-            CaptureCollection documentationCaptures,
-            Regex commentExtractor)
-        {
-            string escapedNewLineLiteral = _lineEnding.Replace(
-                "\r",
-                @"\r"
-            ).Replace(
-                "\n",
-                @"\n"
-            );
-
-            //constructing the documentation text
-            int capturesCount = documentationCaptures.Count;
-            for (int captureIndex = 0; captureIndex < capturesCount; captureIndex++)
-            {
-                Capture capturedLine = documentationCaptures[captureIndex];
-                _documentationBuilder.Append(capturedLine);
-
-                //new line if there is other lines to add
-                if (captureIndex != capturesCount - 1)
-                    _documentationBuilder.Append(escapedNewLineLiteral);
-            }
-
-            string documentation = _documentationBuilder.ToString();
-            _documentationBuilder.Clear();
-
-            string tooltipContent;
-            if (commentExtractor != null)
-            {
-                //extracting the significant meaningful part of the documentation
-                Match match = commentExtractor.Match(documentation);
-                if (!match.Success)
-                    throw new InvalidOperationException(
-                        String.Format(
-                            CultureInfo.InvariantCulture,
-                            "Could not parse the following documentation xml '{0}'",
-                            documentation
-                        )
-                    );
-
-                tooltipContent = match.Groups["comment"].ToString();
-            }
-            else
-                tooltipContent = documentation;
-
-            return tooltipContent;
-        }
+        #endregion
     }
 }
