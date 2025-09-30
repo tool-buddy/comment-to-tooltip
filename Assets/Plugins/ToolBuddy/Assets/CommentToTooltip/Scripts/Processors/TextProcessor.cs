@@ -95,48 +95,52 @@ namespace ToolBuddy.CommentToTooltip
                 documentation,
                 commentExtractor
             );
-            string escapedTooltipContent = EscapeForCSharpLiteral(rawTooltipContent);
+            string escapedTooltipContent = EscapeText(rawTooltipContent);
             string oldTooltipContent = match.Groups["tooltipContent"].ToString();
 
             if (escapedTooltipContent == oldTooltipContent)
                 return false;
 
-            TryRemoveOldTooltip(
-                ref processedText,
-                ref insertedTextLength,
-                match.Groups
+            string tooltip = GetTooltipLine(
+                match.Groups,
+                escapedTooltipContent
             );
 
-            InsertNewTooltip(
-                ref processedText,
-                ref insertedTextLength,
-                match.Groups,
-                GetTooltipLine(
+            Group oldTooltipGroup = match.Groups["tooltip"];
+            if (oldTooltipGroup.Length > 0)
+                ReplaceExistingTooltip(
+                    ref processedText,
+                    ref insertedTextLength,
+                    oldTooltipGroup,
+                    tooltip
+                );
+            else
+                InsertNewTooltip(
+                    ref processedText,
+                    ref insertedTextLength,
                     match.Groups,
-                    escapedTooltipContent
-                )
-            );
+                    tooltip
+                );
 
             return true;
         }
 
-        private static bool TryRemoveOldTooltip(
+        private void ReplaceExistingTooltip(
             ref string processedText,
             ref int insertedTextLength,
-            GroupCollection groups)
+            Group oldTooltipGroup,
+            string replacement)
         {
-            Group oldTooltipGroup = groups["tooltip"];
-
-            if (oldTooltipGroup.Length == 0)
-                return false;
-
+            int replaceIndex = insertedTextLength + oldTooltipGroup.Index;
             processedText = processedText.Remove(
-                insertedTextLength + oldTooltipGroup.Index,
+                replaceIndex,
                 oldTooltipGroup.Length
             );
-            insertedTextLength -= oldTooltipGroup.Length;
-
-            return true;
+            processedText = processedText.Insert(
+                replaceIndex,
+                replacement
+            );
+            insertedTextLength += replacement.Length - oldTooltipGroup.Length;
         }
 
         private static void InsertNewTooltip(
@@ -168,15 +172,15 @@ namespace ToolBuddy.CommentToTooltip
             return _tooltipTagBuilder.ToString();
         }
 
-        private string EscapeForCSharpLiteral(
-            string s)
+        private string EscapeText(
+            string text)
         {
-            if (string.IsNullOrEmpty(s))
+            if (string.IsNullOrEmpty(text))
                 return string.Empty;
 
             _escapingBuilder.Clear();
 
-            foreach (char c in s)
+            foreach (char c in text)
                 switch (c)
                 {
                     case '\\': _escapingBuilder.Append(@"\\"); break;

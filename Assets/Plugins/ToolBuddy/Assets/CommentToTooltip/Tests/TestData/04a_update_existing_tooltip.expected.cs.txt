@@ -10,8 +10,8 @@ namespace TooltipGeneratorTester.AutomaticTests
         /// Test5
         /// </summary>
         [Obsolete("tatatat")]
-        [XmlIgnore]
         [UnityEngine.Tooltip("Test5")]
+        [XmlIgnore]
         public int a3;
     }
 }
