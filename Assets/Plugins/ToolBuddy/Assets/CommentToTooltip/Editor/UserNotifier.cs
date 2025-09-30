@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using ToolBuddy.CommentToTooltip.Processors;
 using UnityEditor;
@@ -71,11 +70,8 @@ namespace ToolBuddy.CommentToTooltip.Editor
                         "Tooltips added or modified in the following files:"
                     );
 
-                    foreach (KeyValuePair<string, string> pair in result.ModifiedFiles)
-                    {
-                        string filePath = pair.Key;
-                        Debug.Log(filePath);
-                    }
+                    foreach (FileModificationInfo file in result.ModifiedFiles)
+                        Debug.Log(file.FilePath);
                 }
             }
         }

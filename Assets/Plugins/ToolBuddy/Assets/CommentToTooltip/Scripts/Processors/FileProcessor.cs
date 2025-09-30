@@ -85,7 +85,7 @@ namespace ToolBuddy.CommentToTooltip.Processors
             int processed = 0;
             bool canceled = false;
 
-            List<KeyValuePair<string, string>> modifiedFiles = new(
+            List<FileModificationInfo> fileModifications = new(
                 filePaths.Count
             );
 
@@ -111,8 +111,8 @@ namespace ToolBuddy.CommentToTooltip.Processors
                         out string modifiedFileContent,
                         commentTypes
                     ))
-                    modifiedFiles.Add(
-                        new KeyValuePair<string, string>(
+                    fileModifications.Add(
+                        new FileModificationInfo(
                             filePath,
                             modifiedFileContent
                         )
@@ -124,7 +124,7 @@ namespace ToolBuddy.CommentToTooltip.Processors
             stopwatch.Stop();
 
             return new FileProcessingResult(
-                modifiedFiles,
+                fileModifications,
                 filePaths.Count,
                 canceled,
                 stopwatch.Elapsed.TotalSeconds
@@ -132,16 +132,15 @@ namespace ToolBuddy.CommentToTooltip.Processors
         }
 
         private static void WriteFilesToDisk(
-            List<KeyValuePair<string, string>> filesToWrite)
+            List<FileModificationInfo> fileModifications)
         {
-            foreach (KeyValuePair<string, string> pair in filesToWrite)
+            foreach (FileModificationInfo fileModificationInfo in fileModifications)
                 using (StreamWriter writer = new(
-                           pair.Key,
-                           false,
-                           Encoding.Default
+                           fileModificationInfo.FilePath,
+                           false
                        ))
                 {
-                    writer.Write(pair.Value);
+                    writer.Write(fileModificationInfo.NewContent);
                 }
         }
     }
