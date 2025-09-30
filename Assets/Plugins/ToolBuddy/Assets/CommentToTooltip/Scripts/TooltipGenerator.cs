@@ -12,8 +12,8 @@ namespace ToolBuddy.CommentToTooltip
     {
         private readonly CommentExtractionRule[] _extractionRules;
         private readonly StringBuilder _documentationBuilder;
-        private readonly string _lineEnding;
         private readonly StringBuilder _tooltipTagBuilder;
+        private readonly StringBuilder _escapingBuilder;
 
         private const string NewLineRegex = @"(?:\r)?\n";
 
@@ -25,7 +25,7 @@ namespace ToolBuddy.CommentToTooltip
         {
             _tooltipTagBuilder = new StringBuilder();
             _documentationBuilder = new StringBuilder();
-            _lineEnding = Environment.NewLine;
+            _escapingBuilder = new StringBuilder();
             _extractionRules = GetCommentExtractionRules();
         }
 
@@ -89,13 +89,14 @@ namespace ToolBuddy.CommentToTooltip
         {
             string documentation = GetDocumentation(match.Groups["documentation"].Captures);
 
-            string newTooltipContent = GetTooltipContent(
+            string rawTooltipContent = GetTooltipContent(
                 documentation,
                 commentExtractor
             );
+            string escapedTooltipContent = EscapeForCSharpLiteral(rawTooltipContent);
             string oldTooltipContent = match.Groups["tooltipContent"].ToString();
 
-            if (newTooltipContent == oldTooltipContent)
+            if (escapedTooltipContent == oldTooltipContent)
                 return false;
 
             TryRemoveOldTooltip(
@@ -110,7 +111,7 @@ namespace ToolBuddy.CommentToTooltip
                 match.Groups,
                 GetTooltipLine(
                     match.Groups,
-                    newTooltipContent
+                    escapedTooltipContent
                 )
             );
 
@@ -159,10 +160,32 @@ namespace ToolBuddy.CommentToTooltip
             _tooltipTagBuilder.Append(tooltipContent);
             //tooltip attribute end
             _tooltipTagBuilder.Append("\")]");
-            _tooltipTagBuilder.Append(_lineEnding);
+            _tooltipTagBuilder.Append(Environment.NewLine);
             string tooltip = _tooltipTagBuilder.ToString();
             _tooltipTagBuilder.Clear();
             return tooltip;
+        }
+
+        private string EscapeForCSharpLiteral(
+            string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return string.Empty;
+
+            _escapingBuilder.Clear();
+
+            foreach (char c in s)
+                switch (c)
+                {
+                    case '\\': _escapingBuilder.Append(@"\\"); break;
+                    case '\"': _escapingBuilder.Append("\\\""); break;
+                    case '\r': _escapingBuilder.Append(@"\r"); break;
+                    case '\n': _escapingBuilder.Append(@"\n"); break;
+                    case '\t': _escapingBuilder.Append(@"\t"); break;
+                    default: _escapingBuilder.Append(c); break;
+                }
+
+            return _escapingBuilder.ToString();
         }
 
         private static string GetTooltipContent(
@@ -189,14 +212,6 @@ namespace ToolBuddy.CommentToTooltip
         private string GetDocumentation(
             CaptureCollection documentationCaptures)
         {
-            string escapedNewLineLiteral = _lineEnding.Replace(
-                "\r",
-                @"\r"
-            ).Replace(
-                "\n",
-                @"\n"
-            );
-
             //constructing the documentation text
             int capturesCount = documentationCaptures.Count;
             for (int captureIndex = 0; captureIndex < capturesCount; captureIndex++)
@@ -206,7 +221,7 @@ namespace ToolBuddy.CommentToTooltip
 
                 //new line if there is other lines to add
                 if (captureIndex != capturesCount - 1)
-                    _documentationBuilder.Append(escapedNewLineLiteral);
+                    _documentationBuilder.Append(Environment.NewLine);
             }
 
             string documentation = _documentationBuilder.ToString();
@@ -303,21 +318,12 @@ namespace ToolBuddy.CommentToTooltip
         /// <summary>
         /// Returns a Regex that extracts the comment from an XML documentation.
         /// </summary>
-        private Regex GetDocumentationCommentPattern()
-        {
-            string doubleEscapedNewLine = _lineEnding.Replace(
-                "\r",
-                @"\\r"
-            ).Replace(
-                "\n",
-                @"\\n"
-            );
-
-            return new(
-                $@"\s*<summary>\s*(?:{doubleEscapedNewLine})?(?<comment>.*?(?=(?:{doubleEscapedNewLine})?\s*</summary\s*))",
+        private Regex GetDocumentationCommentPattern() =>
+            // Match across actual newlines using NewLineRegex and [\s\S]*? for non-greedy multiline capture
+            new(
+                $@"\s*<summary>\s*(?:{NewLineRegex})?(?<comment>[\s\S]*?(?=(?:{NewLineRegex})?\s*</summary\s*))",
                 RegexOptions.Multiline
             );
-        }
 
         #endregion
     }
