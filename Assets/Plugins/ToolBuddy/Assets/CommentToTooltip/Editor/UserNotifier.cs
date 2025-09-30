@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using ToolBuddy.CommentToTooltip.Editor.FileProcessing;
+using ToolBuddy.CommentToTooltip.Processors;
 using UnityEditor;
 using UnityEngine;
 

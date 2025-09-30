@@ -1,12 +1,12 @@
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
-namespace ToolBuddy.CommentToTooltip
+namespace ToolBuddy.CommentToTooltip.CommentParsing
 {
     /// <summary>
     /// Defines the parameters for processing (parsing) code to extract the comments to be put in the tooltips
     /// </summary>
-    public class CommentExtractionRule
+    public class ParsingConfig
     {
         /// <summary>
         /// Regex that extracts from the code the comment line(s)
@@ -34,7 +34,7 @@ namespace ToolBuddy.CommentToTooltip
         /// </summary>
         public CommentTypes SupportedTypes { get; private set; }
 
-        public CommentExtractionRule(
+        public ParsingConfig(
             [NotNull] Regex commentedFieldPattern,
             [CanBeNull] Regex commentExtractor,
             CommentTypes supportedType)

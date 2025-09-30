@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ToolBuddy.CommentToTooltip.Editor.FileProcessing
+namespace ToolBuddy.CommentToTooltip.Processors
 {
     public sealed class FileProcessingResult
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using ToolBuddy.CommentToTooltip.Editor.FileProcessing;
 using ToolBuddy.CommentToTooltip.Editor.Settings;
+using ToolBuddy.CommentToTooltip.Processors;
 using UnityEditor;
 using UnityEngine;
 
@@ -25,7 +25,15 @@ namespace ToolBuddy.CommentToTooltip.Editor
             );
 
             if (File.Exists(filePath))
-                FileProcessor.ProcessFile(filePath);
+            {
+                DirectoryInfo directoryInfo = new FileInfo(filePath).Directory;
+                if (directoryInfo != null)
+                    SettingsStorage.InitialFolderPath = directoryInfo.FullName;
+                FileProcessor.ProcessFile(
+                    filePath,
+                    SettingsStorage.ParsingSettings.GetCommentTypes()
+                );
+            }
         }
 
         [MenuItem(
@@ -41,7 +49,13 @@ namespace ToolBuddy.CommentToTooltip.Editor
             );
 
             if (Directory.Exists(folderPath))
-                FileProcessor.ProcessFolder(folderPath);
+            {
+                SettingsStorage.InitialFolderPath = folderPath;
+                FileProcessor.ProcessFolder(
+                    folderPath,
+                    SettingsStorage.ParsingSettings.GetCommentTypes()
+                );
+            }
         }
 
         [MenuItem(

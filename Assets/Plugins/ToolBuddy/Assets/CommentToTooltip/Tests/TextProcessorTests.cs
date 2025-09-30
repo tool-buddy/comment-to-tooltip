@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ToolBuddy.CommentToTooltip.Tests
 {
-    public class TooltipGeneratorTests
+    public class TextProcessorTests
     {
         private static string LoadText(
             string filePath)
@@ -81,8 +81,8 @@ namespace ToolBuddy.CommentToTooltip.Tests
             string input = LoadText(inputFilePath);
             string expected = LoadText(expectedFilePath);
 
-            TooltipGenerator gen = new();
-            bool modified = gen.TryProcessText(
+            TextProcessor processor = new();
+            bool modified = processor.TryProcessText(
                 input,
                 out string output,
                 CommentTypes.All

@@ -5,15 +5,14 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ToolBuddy.CommentToTooltip.Editor.Settings;
 
-namespace ToolBuddy.CommentToTooltip.Editor.FileProcessing
+namespace ToolBuddy.CommentToTooltip.Processors
 {
     public static class FileProcessor
     {
         //todo consider making this class non-static
 
-        private static readonly TooltipGenerator _tooltipGenerator = new();
+        private static readonly TextProcessor _textProcessor = new();
 
         // Events for UI listeners
         public static event Action NoFileToProcess;
@@ -23,33 +22,33 @@ namespace ToolBuddy.CommentToTooltip.Editor.FileProcessing
         public static event Func<int, int, string, bool> CancellationCheck;
 
         public static void ProcessFile(
-            string filePath)
-        {
-            DirectoryInfo directoryInfo = new FileInfo(filePath).Directory;
-            if (directoryInfo != null)
-                SettingsStorage.InitialFolderPath = directoryInfo.FullName;
-            ProcessFiles(new[] { filePath });
-        }
+            string filePath,
+            CommentTypes commentTypes) =>
+            ProcessFiles(
+                new[] { filePath },
+                commentTypes
+            );
 
 
         public static void ProcessFolder(
-            string folderPath)
+            string folderPath,
+            CommentTypes commentTypes)
         {
-            SettingsStorage.InitialFolderPath = folderPath;
-
             string[] filePaths = Directory.GetFiles(
                 folderPath,
                 "*.cs",
                 SearchOption.AllDirectories
             );
-            ProcessFiles(filePaths);
+            ProcessFiles(
+                filePaths,
+                commentTypes
+            );
         }
 
         private static void ProcessFiles(
-            string[] filePaths)
+            string[] filePaths,
+            CommentTypes commentTypes)
         {
-            CommentTypes commentTypes = SettingsStorage.ParsingSettings.GetCommentTypes();
-
             List<string> validatedFilePaths = filePaths.Where(s => !String.IsNullOrEmpty(s)).ToList();
 
             if (validatedFilePaths.Count == 0)
@@ -107,7 +106,7 @@ namespace ToolBuddy.CommentToTooltip.Editor.FileProcessing
                     Encoding.Default
                 );
 
-                if (_tooltipGenerator.TryProcessText(
+                if (_textProcessor.TryProcessText(
                         fileContent,
                         out string modifiedFileContent,
                         commentTypes
