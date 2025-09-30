@@ -1,0 +1,30 @@
+using System;
+using UnityEngine;
+
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    /// <summary>
+    /// Test
+    /// </summary>
+    internal class C : A, ICloneable
+    {
+        /// <summary>
+        /// Test
+        /// </summary>
+        protected C() { }
+
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        public override string ToString() =>
+            base.ToString();
+
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        public object Clone() =>
+            throw new NotImplementedException();
+    }
+}
