@@ -1,0 +1,41 @@
+using System;
+using UnityEngine;
+
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    public class A
+    {
+        /// <summary>
+        /// Test
+        /// </summary>
+        public int A1
+        {
+            get => a;
+            set => a = value;
+        }
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        public int B 
+            => b;
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        public virtual int A2
+        {
+            get => a;
+            set => a = value;
+        }
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        private int C
+        {
+            get => c;
+            set => c = value;
+        }
+    }
+}
