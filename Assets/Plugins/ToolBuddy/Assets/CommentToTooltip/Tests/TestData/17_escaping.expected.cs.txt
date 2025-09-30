@@ -1,0 +1,23 @@
+namespace TooltipGeneratorTester.AutomaticTests
+{
+    internal class X
+    {
+        /// <summary>
+        /// Use key "F10" to open.
+        /// </summary>
+        [UnityEngine.Tooltip("Use key \"F10\" to open.")]
+        public string hint;
+
+        /// <summary>
+        /// Path: C:\new\n
+        /// </summary>
+        [UnityEngine.Tooltip("Path: C:\\new\\n")]
+        public string pathField;
+
+        /// <summary>
+        /// Shows literal sequences: \n and \t.
+        /// </summary>
+        [UnityEngine.Tooltip("Shows literal sequences: \\n and \\t.")]
+        public int x;
+    }
+}

@@ -1,0 +1,27 @@
+//special thanks to Rachel Lowe. Take a look at her work at:
+//https://11belowstudio.itch.io/
+
+namespace Ligma{
+  public interface IDemonstrateTheProblem{
+  
+      ///<summary>
+      /// This method is (correctly) not slapped with a tooltip.
+      ///</summary>
+      int ThisMethodIsSafe();
+  
+      /// <summary>
+      /// This method is also safe from being given a tooltip
+      /// </summary>
+      public int ThisMethodIsAlsoSafe(bool placeholder);
+  
+      
+      ///<summary>
+      /// This method gets mistaken for a public field, and wrongly has a tooltip applied to it
+      ///</summary>
+      public int OopsiePoopsieTheresGoingToBeATooltipHereAndTheCompilerWillComplain();
+
+      ///<summary> same here (no idea how a public void field would work anyway) </summary>
+      public void OhWhoopsAlsohere();
+  
+  }
+}
