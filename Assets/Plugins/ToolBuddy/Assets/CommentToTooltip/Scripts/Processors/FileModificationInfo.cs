@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace ToolBuddy.CommentToTooltip.Processors
 {
     public sealed class FileModificationInfo
@@ -12,12 +14,20 @@ namespace ToolBuddy.CommentToTooltip.Processors
         /// </summary>
         public string NewContent { get; }
 
+        /// <summary>
+        /// Gets the file's character encoding.
+        /// </summary>
+        public Encoding Encoding { get; }
+
         public FileModificationInfo(
             string filePath,
-            string newContent)
+            string newContent,
+            Encoding encoding)
         {
             FilePath = filePath;
             NewContent = newContent;
+            Encoding = encoding;
+
         }
     }
 }

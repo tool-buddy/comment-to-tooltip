@@ -101,9 +101,11 @@ namespace ToolBuddy.CommentToTooltip.Processors
                 if (canceled)
                     break;
 
+                Encoding fileEncoding = FileEncodingDetector.DetectFileEncoding(filePath);
+
                 string fileContent = File.ReadAllText(
                     filePath,
-                    Encoding.Default
+                    fileEncoding
                 );
 
                 if (_textProcessor.TryProcessText(
@@ -114,7 +116,8 @@ namespace ToolBuddy.CommentToTooltip.Processors
                     fileModifications.Add(
                         new FileModificationInfo(
                             filePath,
-                            modifiedFileContent
+                            modifiedFileContent,
+                            fileEncoding
                         )
                     );
 
@@ -131,13 +134,15 @@ namespace ToolBuddy.CommentToTooltip.Processors
             );
         }
 
+
         private static void WriteFilesToDisk(
             List<FileModificationInfo> fileModifications)
         {
             foreach (FileModificationInfo fileModificationInfo in fileModifications)
                 using (StreamWriter writer = new(
                            fileModificationInfo.FilePath,
-                           false
+                           false,
+                           fileModificationInfo.Encoding
                        ))
                 {
                     writer.Write(fileModificationInfo.NewContent);
