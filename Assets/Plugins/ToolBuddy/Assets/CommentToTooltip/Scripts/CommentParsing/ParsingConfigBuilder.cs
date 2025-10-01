@@ -55,20 +55,20 @@ namespace ToolBuddy.CommentToTooltip.CommentParsing
                 case CommentTypes.SingleLineDocumentation:
                     result = new Regex(
                         $@"(?>^[ \t]*///[ \t]?(?>(?<documentation>[^\r\n]*)){NewLineRegex})+{nonCommentRegexPart}",
-                        RegexOptions.Multiline
+                        RegexOptions.Multiline | RegexOptions.Compiled
                     );
                     break;
                 case CommentTypes.DelimitedDocumentation:
 
                     result = new Regex(
                         $@"(?>^[ \t]*/\*)(?:(?>[ \t]*\*[ \t]?)(?<documentation>[^\r\n]*)(?:{NewLineRegex})?)+[ \t]*\*/[ \t]*{NewLineRegex}{nonCommentRegexPart}",
-                        RegexOptions.Multiline
+                        RegexOptions.Multiline | RegexOptions.Compiled
                     );
                     break;
                 case CommentTypes.SingleLine:
                     result = new Regex(
                         $@"(?>^[ \t]*//(?!/)[ \t]?(?>(?<documentation>[^\r\n]*)){NewLineRegex})+{nonCommentRegexPart}",
-                        RegexOptions.Multiline
+                        RegexOptions.Multiline | RegexOptions.Compiled
                     );
                     break;
                 default:
@@ -97,7 +97,7 @@ namespace ToolBuddy.CommentToTooltip.CommentParsing
                     // Match across actual newlines using NewLineRegex and [\s\S]*? for non-greedy multiline capture
                     result = new Regex(
                         $@"\s*<summary>\s*(?:{NewLineRegex})?(?<comment>[\s\S]*?(?=(?:{NewLineRegex})?\s*</summary\s*))",
-                        RegexOptions.Multiline
+                        RegexOptions.Multiline | RegexOptions.Compiled
                     );
                     break;
                 case CommentTypes.SingleLine:
