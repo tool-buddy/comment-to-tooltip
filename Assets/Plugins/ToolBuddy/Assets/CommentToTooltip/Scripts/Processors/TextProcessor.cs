@@ -89,28 +89,30 @@ namespace ToolBuddy.CommentToTooltip
             ref string processedText,
             ref int insertedTextLength)
         {
-            if (!FieldHasPublicAccess(match.Groups)
-                && !HasSerializeFieldAttribute(match.Groups))
+            GroupCollection groups = match.Groups;
+
+            if (!FieldHasPublicAccess(groups)
+                && !HasSerializeFieldAttribute(groups))
                 return false;
 
-            string documentation = GetDocumentation(match.Groups["documentation"].Captures);
+            string documentation = GetDocumentation(groups["documentation"].Captures);
 
             string rawTooltipContent = GetTooltipContent(
                 documentation,
                 commentExtractor
             );
             string escapedTooltipContent = EscapeText(rawTooltipContent);
-            string oldTooltipContent = match.Groups["tooltipContent"].ToString();
+            string oldTooltipContent = groups["tooltipContent"].ToString();
 
             if (escapedTooltipContent == oldTooltipContent)
                 return false;
 
             string tooltip = GetTooltipLine(
-                match.Groups,
+                groups,
                 escapedTooltipContent
             );
 
-            Group oldTooltipGroup = match.Groups["tooltip"];
+            Group oldTooltipGroup = groups["tooltip"];
             if (oldTooltipGroup.Length > 0)
                 ReplaceExistingTooltip(
                     ref processedText,
@@ -122,7 +124,7 @@ namespace ToolBuddy.CommentToTooltip
                 InsertNewTooltip(
                     ref processedText,
                     ref insertedTextLength,
-                    match.Groups,
+                    groups,
                     tooltip
                 );
 

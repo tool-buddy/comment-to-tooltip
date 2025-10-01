@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 using Ude;
 
@@ -12,7 +11,7 @@ namespace ToolBuddy.CommentToTooltip.Processors
         {
             // UTF-8 with BOM
             if (fileBytes.Length >= 3 && fileBytes[0] == 0xEF && fileBytes[1] == 0xBB && fileBytes[2] == 0xBF)
-                return new UTF8Encoding(true); 
+                return new UTF8Encoding(true);
 
             if (fileBytes.Length >= 2)
             {
@@ -28,7 +27,7 @@ namespace ToolBuddy.CommentToTooltip.Processors
                     return new UnicodeEncoding(
                         true,
                         true
-                    ); 
+                    );
             }
 
             if (fileBytes.Length >= 4)
@@ -45,7 +44,7 @@ namespace ToolBuddy.CommentToTooltip.Processors
                     return new UTF32Encoding(
                         true,
                         true
-                    ); 
+                    );
             }
 
             // Use Ude to detect a non-BOM encoding

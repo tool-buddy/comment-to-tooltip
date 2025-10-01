@@ -27,7 +27,6 @@ namespace ToolBuddy.CommentToTooltip.Processors
             FilePath = filePath;
             NewContent = newContent;
             Encoding = encoding;
-
         }
     }
 }
