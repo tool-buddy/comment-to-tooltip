@@ -8,42 +8,40 @@ namespace ToolBuddy.CommentToTooltip.Processors
     public static class FileEncodingDetector
     {
         public static Encoding DetectFileEncoding(
-            string filePath)
+            byte[] fileBytes)
         {
-            byte[] bytes = File.ReadAllBytes(filePath);
-
             // UTF-8 with BOM
-            if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
+            if (fileBytes.Length >= 3 && fileBytes[0] == 0xEF && fileBytes[1] == 0xBB && fileBytes[2] == 0xBF)
                 return new UTF8Encoding(true); 
 
-            if (bytes.Length >= 2)
+            if (fileBytes.Length >= 2)
             {
                 // UTF-16 LE
-                if (bytes[0] == 0xFF && bytes[1] == 0xFE)
+                if (fileBytes[0] == 0xFF && fileBytes[1] == 0xFE)
                     return new UnicodeEncoding(
                         false,
                         true
                     );
 
                 // UTF-16 BE
-                if (bytes[0] == 0xFE && bytes[1] == 0xFF)
+                if (fileBytes[0] == 0xFE && fileBytes[1] == 0xFF)
                     return new UnicodeEncoding(
                         true,
                         true
                     ); 
             }
 
-            if (bytes.Length >= 4)
+            if (fileBytes.Length >= 4)
             {
                 // UTF-32 LE
-                if (bytes[0] == 0xFF && bytes[1] == 0xFE && bytes[2] == 0x00 && bytes[3] == 0x00)
+                if (fileBytes[0] == 0xFF && fileBytes[1] == 0xFE && fileBytes[2] == 0x00 && fileBytes[3] == 0x00)
                     return new UTF32Encoding(
                         false,
                         true
                     );
 
                 // UTF-32 BE
-                if (bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == 0xFE && bytes[3] == 0xFF)
+                if (fileBytes[0] == 0x00 && fileBytes[1] == 0x00 && fileBytes[2] == 0xFE && fileBytes[3] == 0xFF)
                     return new UTF32Encoding(
                         true,
                         true
@@ -51,7 +49,7 @@ namespace ToolBuddy.CommentToTooltip.Processors
             }
 
             // Use Ude to detect a non-BOM encoding
-            string udeDetectedCharset = GetUdeDetectedCharset(bytes);
+            string udeDetectedCharset = GetUdeDetectedCharset(fileBytes);
 
             if (string.IsNullOrEmpty(udeDetectedCharset))
                 return new UTF8Encoding(false);

@@ -101,12 +101,11 @@ namespace ToolBuddy.CommentToTooltip.Processors
                 if (canceled)
                     break;
 
-                Encoding fileEncoding = FileEncodingDetector.DetectFileEncoding(filePath);
+                byte[] fileBytes = File.ReadAllBytes(filePath);
 
-                string fileContent = File.ReadAllText(
-                    filePath,
-                    fileEncoding
-                );
+                Encoding fileEncoding = FileEncodingDetector.DetectFileEncoding(fileBytes);
+
+                string fileContent = fileEncoding.GetString(fileBytes);
 
                 if (_textProcessor.TryProcessText(
                         fileContent,
