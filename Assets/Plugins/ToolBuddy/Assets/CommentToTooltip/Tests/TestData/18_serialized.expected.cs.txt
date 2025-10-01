@@ -1,0 +1,25 @@
+public class SomeComponent: MonoBehaviour {
+    /// <summary>
+    /// Does some sort of thing
+    /// </summary>
+    [SerializeField]
+    [UnityEngine.Tooltip("Does some sort of thing")]
+    private int _x;
+    
+    /// <summary>
+    /// Hi
+    /// </summary>
+    [SerializeField]
+    [UnityEngine.Tooltip("Hi")]
+    int _y;
+
+    /// <summary>
+    /// Hello
+    /// </summary>
+    private int _z;
+
+    /// <summary>
+    /// Salam
+    /// </summary>
+    int _a;    
+}

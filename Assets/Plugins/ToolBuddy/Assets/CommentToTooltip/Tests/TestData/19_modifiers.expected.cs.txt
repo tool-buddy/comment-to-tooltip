@@ -1,0 +1,21 @@
+public class SomeComponent: MonoBehaviour {
+    /// <summary>
+    /// Hi
+    /// </summary>
+    const public int _1;
+
+    /// <summary>
+    /// Hi
+    /// </summary>
+    public const int _b;
+
+    /// <summary>
+    /// Hi
+    /// </summary>
+    public static int _c;
+
+    /// <summary>
+    /// Hi
+    /// </summary>
+    public readonly int _d;    
+}

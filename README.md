@@ -33,9 +33,6 @@ The code then updates existing tooltip or inserts a new one if none existing. To
 
 - The code relies on regexes to do the parsing. Although relatively robust, it is not a as good as a C# parser such as [Roslyn](https://github.com/dotnet/roslyn). This choice was done to support single-line comments (//). In the future, I might implement a hybrid appraoch: Using Roslyn for single-line/delimited documentation, and using regexes for single-line comments.
 
-- Only the public fields are detected. Private serialized ones are ignored.
-
-
 ## Testing
 
 - Test data lives under:

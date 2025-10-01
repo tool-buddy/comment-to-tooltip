@@ -1,0 +1,23 @@
+public class SomeComponent: MonoBehaviour {
+    /// <summary>
+    /// Does some sort of thing
+    /// </summary>
+    [SerializeField]
+    private int _x;
+    
+    /// <summary>
+    /// Hi
+    /// </summary>
+    [SerializeField]
+    int _y;
+
+    /// <summary>
+    /// Hello
+    /// </summary>
+    private int _z;
+
+    /// <summary>
+    /// Salam
+    /// </summary>
+    int _a;    
+}

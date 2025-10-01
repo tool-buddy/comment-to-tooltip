@@ -41,12 +41,13 @@ namespace ToolBuddy.CommentToTooltip.CommentParsing
 
             const string nonTooltipAttributes =
                 @"(?<attributes>^[ \t]*\[(?!([ \t]*(?:UnityEngine.)?Tooltip))[^]]+\]\s*(?=^))*";
+
             const string nonCommentRegexPart =
                 @"\s*(?=^)"
                 + nonTooltipAttributes
                 + @"(?<tooltip>^[ \t]*\[(?:UnityEngine.)?Tooltip\(""(?<tooltipContent>[^""]*)""\)\]\s*(?=^))?"
                 + nonTooltipAttributes
-                + @"(?<field>(?<beginning>^[ \t]*)public\s+[^\s;=]+\s+[^\s;=\\(]+\s*(?:=(?!>)[^;]+)?;)";
+                + @"(?<field>(?<beginning>^[ \t]*)((?<modifier>public|private|internal|protected)\s+)?[^\s;=]+\s+[^\s;=\\(]+\s*(?:=(?!>)[^;]+)?;)";
 
             Regex result;
             //todo avoid switching on a flags enum

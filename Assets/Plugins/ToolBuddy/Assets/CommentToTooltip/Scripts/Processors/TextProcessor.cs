@@ -89,6 +89,10 @@ namespace ToolBuddy.CommentToTooltip
             ref string processedText,
             ref int insertedTextLength)
         {
+            if (!FieldHasPublicAccess(match.Groups)
+                && !HasSerializeFieldAttribute(match.Groups))
+                return false;
+
             string documentation = GetDocumentation(match.Groups["documentation"].Captures);
 
             string rawTooltipContent = GetTooltipContent(
@@ -124,6 +128,26 @@ namespace ToolBuddy.CommentToTooltip
 
             return true;
         }
+
+
+        private static bool HasSerializeFieldAttribute(
+            GroupCollection groups)
+        {
+            CaptureCollection attributeCaptures = groups["attributes"].Captures;
+            for (int index = 0; index < attributeCaptures.Count; index++)
+                if (attributeCaptures[index].Value.IndexOf(
+                        "SerializeField",
+                        StringComparison.Ordinal
+                    )
+                    >= 0)
+                    return true;
+
+            return false;
+        }
+
+        private static bool FieldHasPublicAccess(
+            GroupCollection groups) =>
+            groups["modifier"].Value == "public";
 
         private void ReplaceExistingTooltip(
             ref string processedText,

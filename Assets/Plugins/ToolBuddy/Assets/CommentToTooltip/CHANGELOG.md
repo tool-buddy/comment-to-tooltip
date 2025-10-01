@@ -13,6 +13,7 @@ When updating, always remove the old version before installing the new one.
 
 - Assembly definitions.
 - Changelog file.
+- Support for serialized non-public fields.
 
 ### Fixed
 
