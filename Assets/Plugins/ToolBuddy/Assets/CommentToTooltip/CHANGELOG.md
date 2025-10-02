@@ -7,6 +7,12 @@ This project does NOT adhere to Semantic Versioning.
 
 When updating, always remove the old version before installing the new one.
 
+## [1.1.1] - 2025-10-02
+
+### Changed
+
+- Improved code structure. No visible change for the end user.
+
 ## [1.1.0] - 2025-09-30
 
 ### Added
