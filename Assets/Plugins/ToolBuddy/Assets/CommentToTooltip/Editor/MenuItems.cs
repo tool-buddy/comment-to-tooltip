@@ -8,6 +8,9 @@ using SettingsService = UnityEditor.SettingsService;
 
 namespace ToolBuddy.CommentToTooltip.Editor
 {
+    /// <summary>
+    /// Registers the Comment to Tooltip menu entries.
+    /// </summary>
     public class MenuItems
     {
         private const string PublisherItemsPath = "Tools/" + AssetInformation.Publisher;
@@ -24,6 +27,9 @@ namespace ToolBuddy.CommentToTooltip.Editor
             _userNotifier = EditorCompositionRoot.Resolve<IUserNotifier>();
         }
 
+        /// <summary>
+        /// Prompts the user to choose a single file and processes it with the configured comment settings.
+        /// </summary>
         [MenuItem(
             MenuName + "Process a file...",
             priority = 0
@@ -48,6 +54,9 @@ namespace ToolBuddy.CommentToTooltip.Editor
             }
         }
 
+        /// <summary>
+        /// Prompts the user to choose a folder and processes every .cs file it contains.
+        /// </summary>
         [MenuItem(
             MenuName + "Process a folder...",
             priority = 1
@@ -70,6 +79,9 @@ namespace ToolBuddy.CommentToTooltip.Editor
             }
         }
 
+        /// <summary>
+        /// Opens the user preferences panel for Comment to Tooltip.
+        /// </summary>
         [MenuItem(
             MenuName + "Preferences",
             priority = 2
@@ -77,6 +89,9 @@ namespace ToolBuddy.CommentToTooltip.Editor
         public static void OnPreferences() =>
             SettingsService.OpenUserPreferences($"Preferences/{AssetInformation.Name}");
 
+        /// <summary>
+        /// Displays the package readme if it can be located within the project; otherwise shows a notification.
+        /// </summary>
         [MenuItem(
             MenuName + "Help",
             priority = 3
@@ -111,6 +126,9 @@ namespace ToolBuddy.CommentToTooltip.Editor
         }
 
 
+        /// <summary>
+        /// Opens the publisher landing page in the system web browser.
+        /// </summary>
         [MenuItem(
             PublisherItemsPath + "/Publisher Page"
         )]

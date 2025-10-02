@@ -6,6 +6,9 @@ using VContainer;
 
 namespace ToolBuddy.CommentToTooltip.Editor
 {
+    /// <summary>
+    /// Configures and hosts the dependency injection container.
+    /// </summary>
     [InitializeOnLoad]
     internal static class EditorCompositionRoot
     {
@@ -28,9 +31,17 @@ namespace ToolBuddy.CommentToTooltip.Editor
             AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
         }
 
+        /// <summary>
+        /// Cleans up container-managed instances prior to Unity reloading assemblies.
+        /// </summary>
         private static void OnBeforeAssemblyReload() =>
             _resolver.Dispose();
 
+        /// <summary>
+        /// Resolves an instance of the requested type from the editor container.
+        /// </summary>
+        /// <typeparam name="T">The service type to resolve.</typeparam>
+        /// <returns>An instance of <typeparamref name="T"/>.</returns>
         public static T Resolve<T>() =>
             _resolver.Resolve<T>();
     }

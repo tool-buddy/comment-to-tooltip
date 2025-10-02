@@ -84,6 +84,9 @@ namespace ToolBuddy.CommentToTooltip.Editor.Settings
             );
         }
 
+        /// <summary>
+        /// Draws the toggles controlling which comment types are transformed into tooltips.
+        /// </summary>
         private static void DrawParsingSettings(
             ParsingSettings parsingSettings,
             out bool parseSingleLineDocumentation,
