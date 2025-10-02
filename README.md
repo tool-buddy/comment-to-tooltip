@@ -20,7 +20,9 @@ It provides the following options:
 - **Delimited documentation (`/* … */`)**: Extracts text from `<summary>…</summary>` blocks.  
 - **Single-line comments (`//`)**: Uses contiguous lines of comments immediately above a field.  
 
-## How It Works (Technical Summary)
+## How It Works
+
+### Regular expressions
 
 Regular expressions are used to capture:  
 - documentation lines  
@@ -28,6 +30,10 @@ Regular expressions are used to capture:
 - the public field declaration line  
 
 The code then updates an existing tooltip or inserts a new one if none is present.
+
+### Dependency Injection
+
+[VContainer](https://vcontainer.hadashikick.jp/) is used for DI. The composition root is defined in [EditorCompositionRoot](Assets/Plugins/ToolBuddy/Assets/CommentToTooltip/Editor/EditorCompositionRoot.cs).
 
 ## Known Limitations
 
