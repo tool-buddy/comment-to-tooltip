@@ -9,6 +9,7 @@ using ToolBuddy.CommentToTooltip.TextProcessing;
 
 namespace ToolBuddy.CommentToTooltip.FileProcessing
 {
+    /// <inheritdoc />
     public sealed class FileProcessor : IFileProcessor
     {
         private readonly ITextProcessor _textProcessor;
@@ -22,12 +23,22 @@ namespace ToolBuddy.CommentToTooltip.FileProcessing
             _fileEncodingDetector = fileEncodingDetector ?? throw new ArgumentNullException(nameof(fileEncodingDetector));
         }
 
+        /// <inheritdoc />
         public event Action NoFileToProcess;
+
+        /// <inheritdoc />
         public event Action NoCommentTypeSelected;
+
+        /// <inheritdoc />
         public event Action<FileProcessingResult> ProcessingCompleted;
+
+        /// <inheritdoc />
         public event Action<Exception> ProcessingError;
+
+        /// <inheritdoc />
         public event Func<int, int, string, bool> CancellationCheck;
 
+        /// <inheritdoc />
         public void ProcessFile(
             string filePath,
             CommentTypes commentTypes) =>
@@ -36,6 +47,7 @@ namespace ToolBuddy.CommentToTooltip.FileProcessing
                 commentTypes
             );
 
+        /// <inheritdoc />
         public void ProcessFolder(
             string folderPath,
             CommentTypes commentTypes)

@@ -107,7 +107,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
                 }
             }
 
-            _userNotifier.DisplayDialogBoxMessage("Could not find ReadMe.txt under a 'CommentToTooltip' folder.");
+            _userNotifier.DisplayMessage("Could not find ReadMe.txt under a 'CommentToTooltip' folder.");
         }
 
 

@@ -6,6 +6,11 @@ using UnityEngine;
 
 namespace ToolBuddy.CommentToTooltip.Editor
 {
+    /// <inheritdoc />
+    /// <remarks>
+    /// Uses Modal Dialogs for user notifications.
+    /// Automatically notifies the user of processing progress, completion, cancellation and errors.
+    /// </remarks>
     public sealed class EditorUserNotifier : IUserNotifier
     {
         private readonly IFileProcessor _processor;
@@ -22,6 +27,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
             _processor.CancellationCheck += OnCancellationCheck;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _processor.NoFileToProcess -= OnNoFileToProcess;
@@ -31,7 +37,8 @@ namespace ToolBuddy.CommentToTooltip.Editor
             _processor.CancellationCheck -= OnCancellationCheck;
         }
 
-        public void DisplayDialogBoxMessage(
+        /// <inheritdoc />
+        public void DisplayMessage(
             string message) =>
             EditorUtility.DisplayDialog(
                 AssetInformation.Name,
@@ -40,10 +47,10 @@ namespace ToolBuddy.CommentToTooltip.Editor
             );
 
         private void OnNoFileToProcess() =>
-            DisplayDialogBoxMessage("No file(s) found to process.");
+            DisplayMessage("No file(s) found to process.");
 
         private void OnNoCommentTypeSelected() =>
-            DisplayDialogBoxMessage("No comment type(s) selected. Please select at least one in the Preferences menu.");
+            DisplayMessage("No comment type(s) selected. Please select at least one in the Preferences menu.");
 
         private bool OnCancellationCheck(
             int nextIndex,
@@ -60,7 +67,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
         private void OnProcessingError(
             Exception e)
         {
-            DisplayDialogBoxMessage(
+            DisplayMessage(
                 "An unexpected error occurred while processing a file. No changes were applied. You can find more details in the console."
             );
             Debug.LogException(e);
@@ -72,10 +79,10 @@ namespace ToolBuddy.CommentToTooltip.Editor
             EditorUtility.ClearProgressBar();
 
             if (result.Canceled)
-                DisplayDialogBoxMessage("The operation was cancelled by the user. No changes were applied.");
+                DisplayMessage("The operation was cancelled by the user. No changes were applied.");
             else
             {
-                DisplayDialogBoxMessage(GetOperationCompletionMessage(result));
+                DisplayMessage(GetOperationCompletionMessage(result));
 
                 if (result.ModifiedFiles.Count != 0)
                 {

@@ -5,9 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace ToolBuddy.CommentToTooltip.TextProcessing
 {
-    /// <summary>
-    /// A class containing a set of methods for generating Unity's tooltips from existing code comments.
-    /// </summary>
+    /// <inheritdoc />
     public sealed class RegexTextProcessor : ITextProcessor
     {
         private readonly StringBuilder _documentationBuilder;
@@ -32,13 +30,7 @@ namespace ToolBuddy.CommentToTooltip.TextProcessing
             };
         }
 
-        /// <summary>
-        /// Processes the given text by updating it with tooltips generated from valid comments.
-        /// </summary>
-        /// <param name="textToProcess"> The input text. </param>
-        /// <param name="processedText"> The output text. If method returns false, this text will be equal to <paramref name="textToProcess"/>. </param>
-        /// <param name="commentTypes"> The <see cref="CommentTypes"/> to be considered while generating the tooltips. </param>
-        /// <returns> True if the text was updated.</returns>
+        /// <inheritdoc />
         public bool TryProcessText(
             string textToProcess,
             out string processedText,

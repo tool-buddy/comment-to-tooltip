@@ -5,8 +5,13 @@ using Ude;
 
 namespace ToolBuddy.CommentToTooltip.FileProcessing
 {
+    /// <inheritdoc />
+    /// <remarks>
+    /// Uses Ude, a C# port of Mozilla Universal Charset Detector.
+    /// </remarks>
     public sealed class UdeFileEncodingDetector : IFileEncodingDetector
     {
+        /// <inheritdoc />
         public Encoding DetectFileEncoding(
             [NotNull] byte[] fileBytes)
         {

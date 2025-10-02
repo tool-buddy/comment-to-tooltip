@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace ToolBuddy.CommentToTooltip.Editor.Settings
 {
+    /// <inheritdoc />
     public sealed class EditoPrefsSettingsService : ISettingsService
     {
         private const string EditorPreferencesKey1 = "C2T_SingleLineDocumentation";
@@ -42,8 +43,10 @@ namespace ToolBuddy.CommentToTooltip.Editor.Settings
             }
         }
 
+        /// <inheritdoc />
         public ParsingSettings ParsingSettings => _parsingSettings;
 
+        /// <inheritdoc />
         public void UpdateParsingSettings(
             bool parseSingleLineDocumentationComments,
             bool parseDelimitedDocumentationComments,
