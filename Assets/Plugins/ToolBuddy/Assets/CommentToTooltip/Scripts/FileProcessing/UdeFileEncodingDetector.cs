@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Text;
+using JetBrains.Annotations;
 using Ude;
 
-namespace ToolBuddy.CommentToTooltip.Processors
+namespace ToolBuddy.CommentToTooltip.FileProcessing
 {
-    public static class FileEncodingDetector
+    public sealed class UdeFileEncodingDetector : IFileEncodingDetector
     {
-        public static Encoding DetectFileEncoding(
-            byte[] fileBytes)
+        public Encoding DetectFileEncoding(
+            [NotNull] byte[] fileBytes)
         {
+            if (fileBytes == null)
+                throw new ArgumentNullException(nameof(fileBytes));
+
             // UTF-8 with BOM
             if (fileBytes.Length >= 3 && fileBytes[0] == 0xEF && fileBytes[1] == 0xBB && fileBytes[2] == 0xBF)
                 return new UTF8Encoding(true);
@@ -50,13 +54,13 @@ namespace ToolBuddy.CommentToTooltip.Processors
             // Use Ude to detect a non-BOM encoding
             string udeDetectedCharset = GetUdeDetectedCharset(fileBytes);
 
-            if (string.IsNullOrEmpty(udeDetectedCharset))
+            if (String.IsNullOrEmpty(udeDetectedCharset))
                 return new UTF8Encoding(false);
 
             Encoding udeDetectedEncoding = Encoding.GetEncoding(udeDetectedCharset);
 
             // If Ude says UTF-8 and no BOM was found above, return UTF-8 without BOM
-            if (string.Equals(
+            if (String.Equals(
                     udeDetectedEncoding.WebName,
                     "utf-8",
                     StringComparison.OrdinalIgnoreCase

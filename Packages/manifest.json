@@ -1,4 +1,13 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "jp.hadashikick"
+      ]
+    }
+  ],
   "dependencies": {
     "com.unity.collab-proxy": "2.5.2",
     "com.unity.ide.rider": "3.0.31",
@@ -24,6 +33,7 @@
     "com.unity.modules.screencapture": "1.0.0",
     "com.unity.modules.terrain": "1.0.0",
     "com.unity.modules.terrainphysics": "1.0.0",
+    "jp.hadashikick.vcontainer": "1.15.3",
     "com.unity.modules.tilemap": "1.0.0",
     "com.unity.modules.ui": "1.0.0",
     "com.unity.modules.uielements": "1.0.0",

@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace ToolBuddy.CommentToTooltip.Processors
+namespace ToolBuddy.CommentToTooltip.FileProcessing
 {
     public sealed class FileModificationInfo
     {

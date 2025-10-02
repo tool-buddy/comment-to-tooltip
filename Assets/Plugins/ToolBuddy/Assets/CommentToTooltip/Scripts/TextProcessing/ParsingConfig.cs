@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
-namespace ToolBuddy.CommentToTooltip.CommentParsing
+namespace ToolBuddy.CommentToTooltip.TextProcessing
 {
     /// <summary>
     /// Defines the parameters for processing (parsing) code to extract the comments to be put in the tooltips

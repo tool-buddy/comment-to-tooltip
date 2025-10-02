@@ -4,7 +4,9 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "ToolBuddy.CommentToTooltip"
+        "ToolBuddy.CommentToTooltip",
+        "ToolBuddy.CommentToTooltip.Editor",
+        "VContainer"
     ],
     "includePlatforms": [
         "Editor"

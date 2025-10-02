@@ -1,57 +1,66 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace ToolBuddy.CommentToTooltip.Editor.Settings
 {
-    internal static class PreferencesProvider
+    public sealed class UserPreferencesProvider : SettingsProvider
     {
-        private static GUIStyle _headerStyle;
-        private static GUIStyle _descStyle;
+        private GUIStyle _descStyle;
+        private GUIStyle _headerStyle;
 
-        private static void EnsureStyles()
+        private ISettingsService _settings;
+
+        public UserPreferencesProvider()
+            : base(
+                $"Preferences/{AssetInformation.Name}",
+                SettingsScope.User
+            )
         {
+            label = AssetInformation.Name;
+            keywords = AssetInformation.Name.Split(' ');
+        }
+
+        [SettingsProvider]
+        public static SettingsProvider CreateProvider() => new UserPreferencesProvider();
+
+        public override void OnActivate(
+            string searchContext,
+            VisualElement rootElement)
+        {
+            _settings = EditorCompositionRoot.Resolve<ISettingsService>();
+
             if (_headerStyle == null)
-                _headerStyle = new GUIStyle(EditorStyles.boldLabel)
-                {
-                    fontSize = 12
-                };
+                _headerStyle = new GUIStyle(EditorStyles.boldLabel) { fontSize = 12 };
 
             if (_descStyle == null)
                 _descStyle = new GUIStyle(EditorStyles.wordWrappedLabel);
         }
 
-        [SettingsProvider]
-        public static SettingsProvider CreateProvider() =>
-            new(
-                $"Preferences/{AssetInformation.Name}",
-                SettingsScope.User
-            )
-            {
-                label = AssetInformation.Name,
-                guiHandler = GUIHandler,
-                keywords = AssetInformation.Name.Split(' ')
-            };
-
-        private static void GUIHandler(
-            string ctx)
+        public override void OnGUI(
+            string searchContext)
         {
-            EnsureStyles();
-
+            if (_settings == null)
+            {
+                EditorGUILayout.HelpBox(
+                    "Settings service is not available.",
+                    MessageType.Error
+                );
+                return;
+            }
 
             GUILayout.Space(6);
-
             GUILayout.Label(
                 "Select which comment types will be parsed into [Tooltip] attributes.",
                 _descStyle
             );
-
             GUILayout.Space(6);
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             GUILayout.Space(4);
 
             DrawParsingSettings(
-                SettingsStorage.ParsingSettings,
+                _settings.ParsingSettings,
                 out bool parseSingleLineDocumentation,
                 out bool parseDelimitedDocumentation,
                 out bool parseSingleLine
@@ -60,19 +69,15 @@ namespace ToolBuddy.CommentToTooltip.Editor.Settings
             GUILayout.Space(4);
             EditorGUILayout.EndVertical();
 
-            // Footer actions
-            if (GUILayout.Button(
-                    "Reset to Defaults"
-                ))
+            if (GUILayout.Button("Reset to Defaults"))
             {
-                // Recommended defaults
                 parseSingleLineDocumentation = true;
                 parseDelimitedDocumentation = true;
                 parseSingleLine = true;
                 GUI.FocusControl(null);
             }
 
-            SettingsStorage.UpdateParsingSettings(
+            _settings.UpdateParsingSettings(
                 parseSingleLineDocumentation,
                 parseDelimitedDocumentation,
                 parseSingleLine

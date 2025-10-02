@@ -1,12 +1,23 @@
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
+using ToolBuddy.CommentToTooltip.TextProcessing;
 using UnityEngine;
+using VContainer;
 
 namespace ToolBuddy.CommentToTooltip.Tests
 {
-    public class TextProcessorTests
+    public class RegexTextProcessorTests
     {
+        private static readonly IObjectResolver _resolver = BuildResolver();
+
+        private static IObjectResolver BuildResolver()
+        {
+            ContainerBuilder builder = new();
+            builder.Register<ITextProcessor, RegexTextProcessor>(Lifetime.Transient);
+            return builder.Build();
+        }
+
         private static string LoadText(
             string filePath)
         {
@@ -67,7 +78,9 @@ namespace ToolBuddy.CommentToTooltip.Tests
                     //triple extension removal
                     Path.GetFileNameWithoutExtension(
                         Path.GetFileNameWithoutExtension(
-                            Path.GetFileNameWithoutExtension(fileName)))
+                            Path.GetFileNameWithoutExtension(fileName)
+                        )
+                    )
                 );
             }
         }
@@ -81,7 +94,7 @@ namespace ToolBuddy.CommentToTooltip.Tests
             string input = LoadText(inputFilePath);
             string expected = LoadText(expectedFilePath);
 
-            TextProcessor processor = new();
+            ITextProcessor processor = _resolver.Resolve<ITextProcessor>();
             bool modified = processor.TryProcessText(
                 input,
                 out string output,

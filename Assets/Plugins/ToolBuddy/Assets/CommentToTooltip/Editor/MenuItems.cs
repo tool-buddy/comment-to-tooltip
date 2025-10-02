@@ -1,16 +1,28 @@
 ﻿using System;
 using System.IO;
 using ToolBuddy.CommentToTooltip.Editor.Settings;
-using ToolBuddy.CommentToTooltip.Processors;
+using ToolBuddy.CommentToTooltip.FileProcessing;
 using UnityEditor;
 using UnityEngine;
+using SettingsService = UnityEditor.SettingsService;
 
 namespace ToolBuddy.CommentToTooltip.Editor
 {
-    public static class MenuItems
+    public class MenuItems
     {
         private const string PublisherItemsPath = "Tools/" + AssetInformation.Publisher;
         private const string MenuName = PublisherItemsPath + "/" + AssetInformation.Name + "/";
+
+        private static readonly IFileProcessor _fileProcessor;
+        private static readonly ISettingsService _settings;
+        private static readonly IUserNotifier _userNotifier;
+
+        static MenuItems()
+        {
+            _fileProcessor = EditorCompositionRoot.Resolve<IFileProcessor>();
+            _settings = EditorCompositionRoot.Resolve<ISettingsService>();
+            _userNotifier = EditorCompositionRoot.Resolve<IUserNotifier>();
+        }
 
         [MenuItem(
             MenuName + "Process a file...",
@@ -20,7 +32,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
         {
             string filePath = EditorUtility.OpenFilePanel(
                 "Select a file",
-                SettingsStorage.InitialFolderPath,
+                _settings.InitialFolderPath,
                 "cs"
             );
 
@@ -28,10 +40,10 @@ namespace ToolBuddy.CommentToTooltip.Editor
             {
                 DirectoryInfo directoryInfo = new FileInfo(filePath).Directory;
                 if (directoryInfo != null)
-                    SettingsStorage.InitialFolderPath = directoryInfo.FullName;
-                FileProcessor.ProcessFile(
+                    _settings.InitialFolderPath = directoryInfo.FullName;
+                _fileProcessor.ProcessFile(
                     filePath,
-                    SettingsStorage.ParsingSettings.GetCommentTypes()
+                    _settings.ParsingSettings.GetCommentTypes()
                 );
             }
         }
@@ -44,16 +56,16 @@ namespace ToolBuddy.CommentToTooltip.Editor
         {
             string folderPath = EditorUtility.OpenFolderPanel(
                 "Select a folder",
-                SettingsStorage.InitialFolderPath,
+                _settings.InitialFolderPath,
                 ""
             );
 
             if (Directory.Exists(folderPath))
             {
-                SettingsStorage.InitialFolderPath = folderPath;
-                FileProcessor.ProcessFolder(
+                _settings.InitialFolderPath = folderPath;
+                _fileProcessor.ProcessFolder(
                     folderPath,
-                    SettingsStorage.ParsingSettings.GetCommentTypes()
+                    _settings.ParsingSettings.GetCommentTypes()
                 );
             }
         }
@@ -95,7 +107,7 @@ namespace ToolBuddy.CommentToTooltip.Editor
                 }
             }
 
-            UserNotifier.DisplayDialogBoxMessage("Could not find ReadMe.txt under a 'CommentToTooltip' folder.");
+            _userNotifier.DisplayDialogBoxMessage("Could not find ReadMe.txt under a 'CommentToTooltip' folder.");
         }
 
 

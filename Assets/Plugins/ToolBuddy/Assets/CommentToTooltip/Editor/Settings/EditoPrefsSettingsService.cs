@@ -5,61 +5,58 @@ using UnityEngine;
 
 namespace ToolBuddy.CommentToTooltip.Editor.Settings
 {
-    public static class SettingsStorage
+    public sealed class EditoPrefsSettingsService : ISettingsService
     {
         private const string EditorPreferencesKey1 = "C2T_SingleLineDocumentation";
         private const string EditorPreferencesKey2 = "C2T_DelimitedDocumentation";
         private const string EditorPreferencesKey3 = "C2T_SingleLine";
-
         private const string InitialFolderPathPreferenceKey = "C2T_InitialFolderPath";
 
-        private static string _initialFolderPath;
+        private readonly ParsingSettings _parsingSettings;
 
-        /// <summary>
-        /// The folder that is displayed when opening a file or folder panel
-        /// </summary>
-        public static string InitialFolderPath
+        private string _initialFolderPath;
+
+        public EditoPrefsSettingsService()
         {
-            get => _initialFolderPath;
-            set
-            {
-                if (_initialFolderPath != value)
-                {
-                    _initialFolderPath = value;
-
-                    EditorPrefs.SetString(
-                        InitialFolderPathPreferenceKey,
-                        value
-                    );
-                }
-            }
-        }
-
-        public static ParsingSettings ParsingSettings { get; }
-
-
-        static SettingsStorage()
-        {
-            ParsingSettings = ReadFromEditorPreferences();
+            _parsingSettings = ReadFromEditorPreferences();
             _initialFolderPath = EditorPrefs.GetString(
                 InitialFolderPathPreferenceKey,
                 Application.dataPath
             );
         }
 
-        public static void UpdateParsingSettings(
+        /// <inheritdoc />
+        public string InitialFolderPath
+        {
+            get => _initialFolderPath;
+            set
+            {
+                if (_initialFolderPath == value)
+                    return;
+
+                _initialFolderPath = value;
+                EditorPrefs.SetString(
+                    InitialFolderPathPreferenceKey,
+                    value
+                );
+            }
+        }
+
+        public ParsingSettings ParsingSettings => _parsingSettings;
+
+        public void UpdateParsingSettings(
             bool parseSingleLineDocumentationComments,
             bool parseDelimitedDocumentationComments,
             bool parseSingleLineComments)
         {
-            bool wasUpdated = ParsingSettings.Update(
+            bool wasUpdated = _parsingSettings.Update(
                 parseSingleLineDocumentationComments,
                 parseDelimitedDocumentationComments,
                 parseSingleLineComments
             );
 
             if (wasUpdated)
-                WriteToEditorPreferences(ParsingSettings);
+                WriteToEditorPreferences(_parsingSettings);
         }
 
         [NotNull]

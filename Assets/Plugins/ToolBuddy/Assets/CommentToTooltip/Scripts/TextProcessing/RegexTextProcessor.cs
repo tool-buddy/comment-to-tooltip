@@ -2,14 +2,13 @@
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using ToolBuddy.CommentToTooltip.CommentParsing;
 
-namespace ToolBuddy.CommentToTooltip
+namespace ToolBuddy.CommentToTooltip.TextProcessing
 {
     /// <summary>
     /// A class containing a set of methods for generating Unity's tooltips from existing code comments.
     /// </summary>
-    public class TextProcessor
+    public sealed class RegexTextProcessor : ITextProcessor
     {
         private readonly StringBuilder _documentationBuilder;
         private readonly StringBuilder _escapingBuilder;
@@ -20,7 +19,7 @@ namespace ToolBuddy.CommentToTooltip
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public TextProcessor()
+        public RegexTextProcessor()
         {
             _tooltipTagBuilder = new StringBuilder();
             _documentationBuilder = new StringBuilder();
@@ -201,8 +200,8 @@ namespace ToolBuddy.CommentToTooltip
         private string EscapeText(
             string text)
         {
-            if (string.IsNullOrEmpty(text))
-                return string.Empty;
+            if (String.IsNullOrEmpty(text))
+                return String.Empty;
 
             _escapingBuilder.Clear();
 

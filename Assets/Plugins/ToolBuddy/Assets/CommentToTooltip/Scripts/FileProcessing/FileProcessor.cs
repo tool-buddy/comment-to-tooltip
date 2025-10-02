@@ -5,23 +5,30 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using ToolBuddy.CommentToTooltip.TextProcessing;
 
-namespace ToolBuddy.CommentToTooltip.Processors
+namespace ToolBuddy.CommentToTooltip.FileProcessing
 {
-    public static class FileProcessor
+    public sealed class FileProcessor : IFileProcessor
     {
-        //todo consider making this class non-static
+        private readonly ITextProcessor _textProcessor;
+        private readonly IFileEncodingDetector _fileEncodingDetector;
 
-        private static readonly TextProcessor _textProcessor = new();
+        public FileProcessor(
+            ITextProcessor textProcessor,
+            IFileEncodingDetector fileEncodingDetector)
+        {
+            _textProcessor = textProcessor ?? throw new ArgumentNullException(nameof(textProcessor));
+            _fileEncodingDetector = fileEncodingDetector ?? throw new ArgumentNullException(nameof(fileEncodingDetector));
+        }
 
-        // Events for UI listeners
-        public static event Action NoFileToProcess;
-        public static event Action NoCommentTypeSelected;
-        public static event Action<FileProcessingResult> ProcessingCompleted;
-        public static event Action<Exception> ProcessingError;
-        public static event Func<int, int, string, bool> CancellationCheck;
+        public event Action NoFileToProcess;
+        public event Action NoCommentTypeSelected;
+        public event Action<FileProcessingResult> ProcessingCompleted;
+        public event Action<Exception> ProcessingError;
+        public event Func<int, int, string, bool> CancellationCheck;
 
-        public static void ProcessFile(
+        public void ProcessFile(
             string filePath,
             CommentTypes commentTypes) =>
             ProcessFiles(
@@ -29,8 +36,7 @@ namespace ToolBuddy.CommentToTooltip.Processors
                 commentTypes
             );
 
-
-        public static void ProcessFolder(
+        public void ProcessFolder(
             string folderPath,
             CommentTypes commentTypes)
         {
@@ -45,37 +51,43 @@ namespace ToolBuddy.CommentToTooltip.Processors
             );
         }
 
-        private static void ProcessFiles(
+        private void ProcessFiles(
             string[] filePaths,
             CommentTypes commentTypes)
         {
             List<string> validatedFilePaths = filePaths.Where(s => !String.IsNullOrEmpty(s)).ToList();
 
             if (validatedFilePaths.Count == 0)
+            {
                 NoFileToProcess?.Invoke();
-            else if (commentTypes == CommentTypes.None)
+                return;
+            }
+
+            if (commentTypes == CommentTypes.None)
+            {
                 NoCommentTypeSelected?.Invoke();
-            else
-                try
-                {
-                    FileProcessingResult result = GetModifiedFiles(
-                        validatedFilePaths,
-                        commentTypes
-                    );
+                return;
+            }
 
-                    if (!result.Canceled)
-                        WriteFilesToDisk(result.ModifiedFiles);
+            try
+            {
+                FileProcessingResult result = GetModifiedFiles(
+                    validatedFilePaths,
+                    commentTypes
+                );
 
-                    ProcessingCompleted?.Invoke(result);
-                }
-                catch (Exception e)
-                {
-                    ProcessingError?.Invoke(e);
-                }
+                if (!result.Canceled)
+                    WriteFilesToDisk(result.ModifiedFiles);
+
+                ProcessingCompleted?.Invoke(result);
+            }
+            catch (Exception e)
+            {
+                ProcessingError?.Invoke(e);
+            }
         }
 
-
-        private static FileProcessingResult GetModifiedFiles(
+        private FileProcessingResult GetModifiedFiles(
             [NotNull] List<string> filePaths,
             CommentTypes commentTypes)
         {
@@ -91,19 +103,19 @@ namespace ToolBuddy.CommentToTooltip.Processors
 
             foreach (string filePath in filePaths)
             {
-                canceled = (CancellationCheck != null
-                            && CancellationCheck.Invoke(
-                                processed + 1,
-                                filePaths.Count,
-                                filePath
-                            ));
+                canceled = CancellationCheck?.Invoke(
+                               processed + 1,
+                               filePaths.Count,
+                               filePath
+                           )
+                           ?? false;
 
                 if (canceled)
                     break;
 
                 byte[] fileBytes = File.ReadAllBytes(filePath);
 
-                Encoding fileEncoding = FileEncodingDetector.DetectFileEncoding(fileBytes);
+                Encoding fileEncoding = _fileEncodingDetector.DetectFileEncoding(fileBytes);
 
                 string fileContent = fileEncoding.GetString(fileBytes);
 
@@ -132,7 +144,6 @@ namespace ToolBuddy.CommentToTooltip.Processors
                 stopwatch.Elapsed.TotalSeconds
             );
         }
-
 
         private static void WriteFilesToDisk(
             List<FileModificationInfo> fileModifications)

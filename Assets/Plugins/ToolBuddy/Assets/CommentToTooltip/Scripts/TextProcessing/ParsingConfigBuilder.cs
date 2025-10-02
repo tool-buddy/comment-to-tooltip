@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace ToolBuddy.CommentToTooltip.CommentParsing
+namespace ToolBuddy.CommentToTooltip.TextProcessing
 {
     public static class ParsingConfigBuilder
     {
