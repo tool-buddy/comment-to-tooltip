@@ -47,6 +47,7 @@ The code then updates an existing tooltip or inserts a new one if none is presen
   `Assets/Plugins/ToolBuddy/Assets/CommentToTooltip/Tests/TestData/`  
   Each test includes an **input** file (`.input.cs.txt`) and an **expected** output file (`.expected.cs.txt`).  
 - Run tests via the Unity Test Runner under the `ToolBuddy.CommentToTooltip.Tests` assembly.  
+- Continuous integration runs EditMode tests via [`.github/workflows/editor-tests.yml`](.github/workflows/editor-tests.yml).
 
 ## License
 
