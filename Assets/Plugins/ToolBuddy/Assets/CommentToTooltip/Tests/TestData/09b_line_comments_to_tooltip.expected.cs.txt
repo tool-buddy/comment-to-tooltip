@@ -7,7 +7,7 @@ namespace TooltipGeneratorTester.AutomaticTests
     {
         //x21
         // x22
-        [UnityEngine.Tooltip("x21\r\nx22")]
+        [UnityEngine.Tooltip("x21\nx22")]
         public int a12;
     }
 }

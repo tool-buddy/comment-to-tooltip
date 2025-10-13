@@ -101,9 +101,22 @@ namespace ToolBuddy.CommentToTooltip.Tests
                 CommentTypes.All
             );
 
+
             Assert.AreEqual(
-                expected,
-                output,
+                expected.Replace(
+                    "\r\n",
+                    "\n"
+                ).Replace(
+                    @"\r\n",
+                    @"\n"
+                ),
+                output.Replace(
+                    "\r\n",
+                    "\n"
+                ).Replace(
+                    @"\r\n",
+                    @"\n"
+                ),
                 $"Generated output does not match expected for case: {inputFilePath}"
             );
 

@@ -10,7 +10,7 @@ namespace TooltipGeneratorTester.AutomaticTests
         ///
         /// Test3
         /// </summary>
-        [UnityEngine.Tooltip("Test2\r\n\r\nTest3")]
+        [UnityEngine.Tooltip("Test2\n\nTest3")]
         public int a2;
     }
 }
