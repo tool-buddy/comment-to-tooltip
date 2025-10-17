@@ -1,3 +1,5 @@
+[![Editor Tests](https://github.com/tool-buddy/comment-to-tooltip/actions/workflows/editor-tests.yml/badge.svg)](https://github.com/tool-buddy/comment-to-tooltip/actions/workflows/editor-tests.yml)
+
 # Comment To Tooltip
 
 > This is the public repository of the **Comment To Tooltip** asset for Unity: https://assetstore.unity.com/packages/tools/utilities/comment-to-tooltip-120659
@@ -56,3 +58,4 @@ See [LICENSE.md](LICENSE.md)
 ## Changelog
 
 See [CHANGELOG.md](Assets/Plugins/ToolBuddy/Assets/CommentToTooltip/CHANGELOG.md)
+
