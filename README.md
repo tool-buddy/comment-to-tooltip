@@ -39,9 +39,7 @@ The code then updates an existing tooltip or inserts a new one if none is presen
 
 ## Known Limitations
 
-- The code relies on regex for parsing. Although relatively robust, it is not as accurate as a full C# parser such as [Roslyn](https://github.com/dotnet/roslyn).  
-- This design choice was made to support single-line comments (`//`).  
-- In the future, a hybrid approach may be implemented: using Roslyn for documentation comments, and regex for single-line comments.  
+The code relies on regex for parsing. Although relatively robust, it is not as accurate as a full C# parser such as [Roslyn](https://github.com/dotnet/roslyn). This design choice was made to support single-line comments (`//`). In the future, a hybrid approach may be implemented: using Roslyn for documentation comments, and regex for single-line comments.  
 
 ## Testing
 
@@ -58,4 +56,5 @@ See [LICENSE.md](LICENSE.md)
 ## Changelog
 
 See [CHANGELOG.md](Assets/Plugins/ToolBuddy/Assets/CommentToTooltip/CHANGELOG.md)
+
 
